@@ -1,0 +1,399 @@
+#:import Factory kivy.factory.Factory
+
+<StackButtonMenu@MDFloatingActionButton>
+    pos: self.parent.center_x - self.width /2 , "50dp"
+
+<StackButtonPm@MDFloatingActionButton>
+    pos: "20dp" , "20dp" 
+
+<ClickableTextFieldRound>:
+    size_hint_y: None
+    height: text_field.height
+    text:text_field.text
+
+    MDTextField:
+        id: text_field
+        hint_text: root.hint_text
+        max_text_length: 99
+        text: root.text
+        password: True
+        #on_focus:if text_field.text == ' ': text_field.text=''
+
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {"center_y": .5}
+        pos: text_field.width - self.width + dp(8), 0
+        theme_text_color: "Hint"
+        on_release:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            text_field.password = False if text_field.password is True else True
+
+
+
+ScreenManager:
+    MenuScreen:
+    PMScreen:
+
+
+<ScreenManager>:
+    canvas.before:
+        Color:
+            rgba: (0,0,0,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<MenuScreen>:
+    name:'menu'
+    canvas.before:
+        Color:
+            rgba: (0,0,0,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    StackButtonMenu:
+        id: btnPm
+        icon: "table-lock"
+        text: "SecuroB"
+        on_release: 
+            root.anim_btn()
+            root.manager.transition.is_active = False
+            root.manager.transition.duration = 0
+            root.manager.current = "pm"
+
+    StackButtonMenu:
+        id: btnBlockChain
+        type: "small"
+        icon: "link-variant"
+        on_press:root.errorFilePopup()
+
+    StackButtonMenu:
+        id: btnCreateData
+        type: "small"
+        icon: "alpha-x"
+
+    RootButton:
+        id: btn_root_menu
+        icon: "menu"
+        elevation: 0
+        pos_hint: {"center_x": .5}
+        y: "50dp"
+        md_bg_color: app.theme_cls.primary_dark
+        on_release: root.anim_btn()
+
+
+<PMScreen>:
+    name: 'pm'
+    id:pm
+    canvas.before:
+        Color:
+            rgba: (0,0,0,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        pos_hint:{'y':.465}
+        halign: 'center'
+        Label:
+            text: "Password Manager"
+            halign: 'center'
+            font_size:80
+            bold: True
+            color: (255/255,153/255,0/255,1)
+            outline_width: 1
+            outline_color: (1,1,1)
+    MDSeparator:
+        pos_hint:{'y':.935}
+        width:2
+        color: (255/255,1,1,1)
+
+
+    ClickableTextFieldRound:
+        id:mainPassword  
+        size_hint_x: None
+        width: 500
+        pos_hint:{'x':.05, 'y':.86}
+        hint_text:"Main Password"
+        #text:
+        #on_focus: text = text_input.text
+        
+
+    GridLayout:
+        orrientation: "horizontal"
+        cols:2
+        spacing: 15
+        pos_hint:{'x':.55,'top':.924}
+
+
+        MDRectangleFlatButton:
+            id: browseDatabaseBtn
+            text: "Browse"
+            on_release: root.show_load()
+        MDRectangleFlatButton:
+            id: openTreeviewBtn
+            text: "Open"
+            on_release:root.openDbcToTable()
+    
+    BoxLayout:
+        spacing:10
+        pos_hint:{'y':.825,'x':.194}
+        MDRectangleFlatButton:
+            text: "Reset Password"
+            on_press:root.changePasswordMain()
+        
+        MDRectangleFlatButton:
+            text: "Change Name"
+            on_press:root.changeNameDbc()
+            
+
+    BoxLayout:
+        pos_hint:{'y':.305}
+        Label:
+            id: labelopenedManager
+            text: "Manager open:"
+            font_size:48
+
+    BoxLayout:
+        spacing: 5
+        pos_hint:{'center_x':.5, 'y':.733}
+
+        MDRectangleFlatButton:
+            text: "Add Records"
+            on_press: root.addRecord()
+        MDRectangleFlatButton:
+            text: "Update Records"
+            on_press:root.updateRecordSelected()
+        MDRectangleFlatButton:
+            text: "Remove Selected"
+            on_press: root.removeRecordSelected()
+
+    BoxLayout:
+        pos_hint:{'x':.07, 'y':.63}
+        spacing:25
+        MDRoundFlatIconButton:
+            size_hint_x:(None)
+            width:20
+            text:"Boxes"
+            icon: "close"
+            on_press:root.clearBoxes()
+        MDRectangleFlatButton:
+            text: "Search in Table"
+        MDRoundFlatIconButton:
+            size_hint_x:(None)
+            width:20
+            text:"Tables"
+            icon: "refresh"
+            on_press:root.querryDataBase()
+
+    BoxLayout:
+        orrientation: "horizontal"
+        pos_hint: {"y":.68}
+        MDTextField:
+            id: name_field
+            hint_text: "Name"
+            multiline: False
+            mode: "round"
+            size_hint: 0.2, None
+            height: "20dp"
+            
+        MDTextField:
+            id: id_field
+            hint_text: "Id / E-mail"
+            multiline: False
+            mode: "round"
+            size_hint: 0.2, None
+            height: "20dp"
+
+        MDTextField:
+            id: password_field
+            hint_text: "Password"
+            multiline: False
+            mode: "round"
+            size_hint: 0.25, None
+            height: "20dp"
+
+    StackButtonPm:
+        id: btnMenu
+        type: "small"
+        icon: "backburger"
+        on_release:
+            root.anim_btn()
+            root.Exit()
+            root.manager.transition.is_active = False
+            root.manager.transition.duration = 0
+            root.manager.current = "menu"
+
+    StackButtonPm:
+        id: btnPss
+        type: "small"
+        icon: "key-variant"
+        on_release: root.PassworGenPopup()
+    StackButtonPm:
+        id: btnCreateData
+        type: "small"
+        icon: "script-text-key-outline"
+        on_release: root.show_save()   
+    StackButtonPm:
+        id: btnSaveData
+        type: "small"
+        icon: "content-save-move"
+        on_release: root.saveAndExitData()
+
+    RootButton:
+        id: btn_root_pm
+        icon: "menu"
+        elevation: 0
+        x:"20dp"
+        y: "20dp"
+        md_bg_color: app.theme_cls.primary_dark
+        on_release: root.anim_btn()
+
+
+<LoadDialog>:
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ['*.dbc']
+
+        BoxLayout:
+            size_hint_y: None
+            height: 100
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Load"
+                on_release: root.load(filechooser.path, filechooser.selection)
+
+<SaveDialog>:
+    text_input: text_input
+    
+    BoxLayout:
+        spacing:10
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        FileChooserListView:
+            id: filechooser
+            filters: ['*.dbc']
+            on_selection: text_input.text = self.selection and self.selection[0] or ''
+        MDSeparator:
+            width:8
+            color:(47/255,167/255,212/255,1)
+        BoxLayout:
+            size_hint_y: None
+            height: 100
+            Label:
+                text: "Name :"
+                size_hint_x: .2
+                font_size:55
+                bold: True
+            TextInput:
+                id: text_input
+                size_hint_x: .8
+                font_size:55
+                height: 100
+                multiline: False
+
+        BoxLayout:
+            size_hint_y: None
+            height: 100
+            Button:
+                text: "Cancel"
+                on_release: root.cancel()
+
+            Button:
+                text: "Save"
+                on_release: root.save(filechooser.path, text_input.text)
+    
+<AskPassword>:
+    
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        spacing:10
+        Label:
+            size_hint_y: None
+            height: 100
+            text: "it's your main password \n don't loose it \n min 14 character"
+            halign: 'center'
+            font: 40
+        ClickableTextFieldRound:
+            id: text_input
+            size_hint_y: None
+            height: 100
+            multiline: False
+
+        Button:
+            text: "Submit"
+            on_release: root.submit(root.path, root.filename,text_input.text)
+            size_hint_y: None
+            height:75
+
+<AskName>:
+    
+    BoxLayout:
+        size: root.size
+        pos: root.pos
+        orientation: "vertical"
+        spacing:10
+        Label:
+            size_hint_y: None
+            height: 100
+            text: "it's the file name"
+            halign: 'center'
+            font: 40
+        MDTextField:
+            id: text_field
+            hint_text: "Name DBC"
+
+        Button:
+            text: "Submit"
+            on_release: root.submit(root.path, text_field.text, root.filename)
+            size_hint_y: None
+            height:75
+
+
+<GenPassword>:
+    id:genPP
+    BoxLayout:
+        pos:root.pos
+        orientation:"vertical"
+        spacing: 20
+        GridLayout:
+            pos_hint:{"top": 0.5}
+            cols:2
+            Label:
+                text:"lenght > 14"
+                font:40
+                size_hint:(None,None)
+                width:300
+                height:100
+                halign:"center"
+            MDTextField:
+                id:passwordlen
+                font:64
+                max_text_length: 3
+                size_hint:(None,None)
+                width:150
+                height:100
+                input_type: "number"
+            
+        MDRectangleFlatButton:
+            text:"Generate"
+            font:40
+            pos_hint: {'center_x': .5,'y':.5}
+            on_press: root.genPassword(passwordlen.text)
+        MDTextField:
+            id:passwordgen
+            size_hint_y:None
+            height:100
+            font:64
+            on_focus: root.clipboard(passwordgen.text)
