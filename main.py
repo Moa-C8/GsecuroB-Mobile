@@ -200,10 +200,6 @@ class MenuScreen(Screen):
         if self.btn_visible:
             self.anim_btn()
 
-    def errorFilePopup(self, args=[]):
-        popup = Popup(title=f'Wait ...', content=Label(text="it happens",halign='center'),
-              auto_dismiss=True, size_hint=(0.7, 0.3),pos_hint={'top':0.7})
-        popup.open()
 
 class PMScreen(Screen):
     btn_visible = False
@@ -324,12 +320,13 @@ class PMScreen(Screen):
     def openDbcToTable(self):
         password = self.ids.mainPassword.text
         if(password == '' or password == ' ' or len(password)< 14):
+            self.ErrorToast("lenght 14 chars min")
             return
         key = hashPassword(password)
         password = ''
-        dcrypt = decryptDatabase(key,self.data[0]) != ""
+        dcrypt = decryptDatabase(key,self.data[0])
         if (not dcrypt):
-            self.errorFilePopup([f"with Password","You are browsing a wrong file or \nentering a wrong password"])
+            self.ErrorToast("Wrong file or password")
             return
 
         self.ids.openTreeviewBtn.text = 'Opened'
@@ -338,7 +335,7 @@ class PMScreen(Screen):
 
     def show_save(self):
         if(self.ids.browseDatabaseBtn.text != "Browse"):
-            self.errorFilePopup(["File", "save or exit before\n do that"])
+            self.ErrorToast("save or exit before")
             return
         content = SaveDialog(save=self.askPasswordDbc, cancel=self.dismiss_popup)
         filechooser = content.ids.filechooser
@@ -359,11 +356,17 @@ class PMScreen(Screen):
     def save(self,path,filename,password):
         if (len(password) < 14):
             self.dismiss_popup()
+            self.ErrorToast("lenght 14 chars min")
+            return
+            
         if ('.dbc' not in filename):
             filename = f'{filename}.dbc'
             createTable()
         key = hashPassword(password)
-        cryptDatabase(key,path,filename,self.mode)
+        crypt = cryptDatabase(key,path,filename,self.mode)
+        if (not crypt):
+            self.ErrorToast("Wrong file or password truc")
+            return
         self.dismiss_popup()
         if (self.mode == 'resetN'):
             if os.path.exists(os.path.join(self.data[1],self.data[2])):
@@ -502,7 +505,7 @@ class PMScreen(Screen):
     def addRecord(self):
         #update database
         if (self.ids.name_field.text == '' or self.ids.id_field.text== '' or self.ids.password_field.text == ''):
-            print('Add Problem')
+            self.ErrorToast("fill Name field")
             return
 
         try:
@@ -531,7 +534,7 @@ class PMScreen(Screen):
         try:
             conn = sqlite3.connect(tempDB)
         except:
-            print("soucis querry database")
+            return
         else:
             curs = conn.cursor()
             curs.execute('SELECT rowid, * FROM customers')
@@ -549,8 +552,7 @@ class PMScreen(Screen):
         try:
             conn = sqlite3.connect(tempDB)
         except:
-            print("nn")
-            pass
+            return
         else: 
             c = conn.cursor()
 
@@ -573,8 +575,7 @@ class PMScreen(Screen):
                 try:
                     conn = sqlite3.connect(tempDB)
                 except:
-                    print("nn")
-                    pass
+                    return
                 else:
                     site_app = row[0]
                     id_mail = row[1]
@@ -637,7 +638,9 @@ class PMScreen(Screen):
               auto_dismiss=True, size_hint=(0.7, 0.3),pos_hint={'top':0.7})
         popup.open()
 
-
+    def ErrorToast(self,text):
+        text = str(text)
+        toast(text=text,duration=1)
     
 
 sm = ScreenManager()

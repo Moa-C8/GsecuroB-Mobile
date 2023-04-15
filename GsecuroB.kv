@@ -17,7 +17,6 @@
         max_text_length: 99
         text: root.text
         password: True
-        #on_focus:if text_field.text == ' ': text_field.text=''
 
     MDIconButton:
         icon: "eye-off"
@@ -116,8 +115,6 @@ ScreenManager:
         width: 500
         pos_hint:{'x':.05, 'y':.86}
         hint_text:"Main Password"
-        #text:
-        #on_focus: text = text_input.text
         
 
     GridLayout:
@@ -328,6 +325,7 @@ ScreenManager:
         ClickableTextFieldRound:
             id: text_input
             size_hint_y: None
+            hint_text:"Main Password"
             height: 100
             multiline: False
 

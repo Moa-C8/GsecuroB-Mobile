@@ -69,20 +69,25 @@ def hashPassword(password):
     return key
 
 def cryptDatabase(key,pathdbc,namedb,mode = ''):
-    f = Fernet(key)
-    dbFile = open(tempDB, 'rb')
-    contentDbFile = dbFile.read()
-    dbFile.close()
-    if (mode == 'resetP'):
-        if os.path.exists(os.path.join(pathdbc, namedb)):
-            os.remove(os.path.join(pathdbc, namedb))
-    contentDbcFile = f.encrypt(contentDbFile)
-    contentDbFile=''
-    dbcFile = open(os.path.join(pathdbc, namedb), 'wb')
-    dbcFile.write(contentDbcFile)
-    dbcFile.close()
-    if os.path.exists(tempDB):
-         os.remove(tempDB)
+    try:
+        f = Fernet(key)
+    except:
+        return False
+    else:
+        dbFile = open(tempDB, 'rb')
+        contentDbFile = dbFile.read()
+        dbFile.close()
+        if (mode == 'resetP'):
+            if os.path.exists(os.path.join(pathdbc, namedb)):
+                os.remove(os.path.join(pathdbc, namedb))
+        contentDbcFile = f.encrypt(contentDbFile)
+        contentDbFile=''
+        dbcFile = open(os.path.join(pathdbc, namedb), 'wb')
+        dbcFile.write(contentDbcFile)
+        dbcFile.close()
+        if os.path.exists(tempDB):
+            os.remove(tempDB)
+        return True
 
 def decryptDatabase(key,pathdbc):
     try:
@@ -99,12 +104,12 @@ def decryptDatabase(key,pathdbc):
     try:
         createTable()
     except:
-        print("lalal")
+        return False
     else:
         dbFile = open(tempDB, 'wb')
         dbFile.write(contentDbFile)
         dbFile.close()
-    return True
+        return True
 
 def createTable():
         try:
