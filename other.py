@@ -132,7 +132,7 @@ tempDB = 'qwerty.db'
 listExt = ['txt','csv','zip','aac','avi','doc','docx','gif','gz','h','htm','ico','iso','jpeg','mkv','mp3','mp4','odt','odp','ods',
 'odg','pdf','png','pps','py','rar','tar','torrent','xls','xlsx','wav','xml','bat','bmp','exe','.sh']
 
-# Alphabet
+# Alphabets
 alphabet = string.ascii_letters
 nombre = string.digits
 alphabet_plusMoinSpace =list(string.ascii_letters + string.punctuation + string.digits)
