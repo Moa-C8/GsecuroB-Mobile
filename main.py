@@ -13,10 +13,11 @@ from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.utils import platform
-
+from kivy.core.clipboard import Clipboard
 
 
 from plyer import filechooser
+from plyer import notification
 
 from kivymd.uix.button import MDFloatingActionButton
 from kivymd.app import MDApp
@@ -32,21 +33,15 @@ import hashlib
 import random
 import cryptography
 import os
-from kivy.core.clipboard import Clipboard
-"""try:   
-    import clipboard
-except:
-    pass
-try:
-    from android.clipboard import Clipboard as Aclip
-except:
-    pass"""
 
 Upath = ''
 if ( platform == 'android' ):
     Upath = '/storage/emulated/0/'
+    
+
 elif(platform == 'linux'):
     Upath = '~'
+    
 else:
     Upath = '/'
 
@@ -301,6 +296,9 @@ class PMScreen(Screen):
         self._popup.dismiss()
 
     def show_load(self):
+        if (self.ids.openTreeviewBtn.text != 'Open'):
+            toast("Close this one before")
+            return
         content = LoadDialog(load=self.load, cancel=self.dismiss_popup)
         filechooser = content.ids.filechooser
         filechooser.path = os.path.expanduser(Upath) # Définit le répertoire initial à ~
@@ -318,15 +316,18 @@ class PMScreen(Screen):
         self.ids.browseDatabaseBtn.text = 'Browsed'
     
     def openDbcToTable(self):
+        if (self.ids.openTreeviewBtn.text != 'Open'):
+            toast("Close this one before")
+            return
         password = self.ids.mainPassword.text
         if(password == '' or password == ' ' or len(password)< 14):
-            self.ErrorToast("lenght 14 chars min")
+            toast("Lenght 14 chars min")
             return
         key = hashPassword(password)
         password = ''
         dcrypt = decryptDatabase(key,self.data[0])
         if (not dcrypt):
-            self.ErrorToast("Wrong file or password")
+            toast("Wrong file or password")
             return
 
         self.ids.openTreeviewBtn.text = 'Opened'
@@ -335,7 +336,7 @@ class PMScreen(Screen):
 
     def show_save(self):
         if(self.ids.browseDatabaseBtn.text != "Browse"):
-            self.ErrorToast("save or exit before")
+            toast("Close this one before")
             return
         content = SaveDialog(save=self.askPasswordDbc, cancel=self.dismiss_popup)
         filechooser = content.ids.filechooser
@@ -356,7 +357,7 @@ class PMScreen(Screen):
     def save(self,path,filename,password):
         if (len(password) < 14):
             self.dismiss_popup()
-            self.ErrorToast("lenght 14 chars min")
+            toast("lenght 14 chars min")
             return
             
         if ('.dbc' not in filename):
@@ -365,7 +366,7 @@ class PMScreen(Screen):
         key = hashPassword(password)
         crypt = cryptDatabase(key,path,filename,self.mode)
         if (not crypt):
-            self.ErrorToast("Wrong file or password truc")
+            toast("Wrong file or password")
             return
         self.dismiss_popup()
         if (self.mode == 'resetN'):
@@ -495,17 +496,14 @@ class PMScreen(Screen):
         self.ids.password_field.text = row_data[2]
         Clipboard.copy(passData)
         if(platform != 'android'):
-            self.copiedToast()
-
-    def copiedToast(self):
-        toast(text='password copied',duration=1)
-            
+            toast("password copied")
+          
     # Records
 
     def addRecord(self):
         #update database
         if (self.ids.name_field.text == '' or self.ids.id_field.text== '' or self.ids.password_field.text == ''):
-            self.ErrorToast("fill Name field")
+            toast("fill Name field")
             return
 
         try:
@@ -638,9 +636,6 @@ class PMScreen(Screen):
               auto_dismiss=True, size_hint=(0.7, 0.3),pos_hint={'top':0.7})
         popup.open()
 
-    def ErrorToast(self,text):
-        text = str(text)
-        toast(text=text,duration=1)
     
 
 sm = ScreenManager()
