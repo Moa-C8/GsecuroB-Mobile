@@ -68,7 +68,7 @@ def hashPassword(password):
 
     return key
 
-def cryptDatabase(key,pathdbc,namedb,mode = ''):
+def cryptDatabase(key,pathdbc,namedb="",mode = ''):
     try:
         f = Fernet(key)
     except:
@@ -77,6 +77,8 @@ def cryptDatabase(key,pathdbc,namedb,mode = ''):
         dbFile = open(tempDB, 'rb')
         contentDbFile = dbFile.read()
         dbFile.close()
+        if (namedb != ""):
+            pathdbc = os.path.join(pathdbc,namedb)
         if (mode == 'resetP'):
             if os.path.exists(pathdbc):
                 os.remove(pathdbc)

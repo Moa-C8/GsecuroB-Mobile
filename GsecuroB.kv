@@ -128,7 +128,7 @@ ScreenManager:
         MDRectangleFlatButton:
             id: browseDatabaseBtn
             text: "Browse"
-            on_press:root.file_manager_open()
+            on_press:root.loadfile_manager_open()
         MDRectangleFlatButton:
             id: openTreeviewBtn
             text: "Open"
@@ -235,7 +235,7 @@ ScreenManager:
         id: btnCreateData
         type: "small"
         icon: "script-text-key-outline"
-        on_release: root.show_save()   
+        on_release: root.savefile_manager_open()   
     StackButtonPm:
         id: btnSaveData
         type: "small"
@@ -314,7 +314,6 @@ ScreenManager:
                 on_release: root.save(filechooser.path, text_input.text)
     
 <AskPassword>:
-    
     BoxLayout:
         size: root.size
         pos: root.pos
@@ -323,11 +322,17 @@ ScreenManager:
         Label:
             size_hint_y: None
             height: 100
-            text: "it's your main password \n don't loose it \n min 14 character"
+            text: "keep your password /nminimum length 14"
             halign: 'center'
             font: 40
+        MDTextField:
+            id: saveName_input
+            size_hint_y: None
+            hint_text:"Name"
+            height: 100
+            multiline: False
         ClickableTextFieldRound:
-            id: text_input
+            id: savePassword_input
             size_hint_y: None
             hint_text:"Main Password"
             height: 100
@@ -335,7 +340,7 @@ ScreenManager:
 
         Button:
             text: "Submit"
-            on_release: root.submit(root.path, root.filename,text_input.text)
+            on_release: root.submit(root.path, saveName_input.text,savePassword_input.text)
             size_hint_y: None
             height:75
 

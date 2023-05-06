@@ -325,11 +325,11 @@ class PMScreen(Screen):
     def dismiss_popup(self):
         self._popup.dismiss()
 
-    def file_manager_open(self):
+    def loadfile_manager_open(self):
         self.file_manager = MDFileManager(
             exit_manager=self.exit_manager,
             select_path=self.select_loadpath,
-            ext=['.dbc','.txt']
+            ext=['.dbc']
         )
         self.file_manager.show(Upath) # Le répertoire racine
         
@@ -388,15 +388,22 @@ class PMScreen(Screen):
         self._popup = Popup(title="Save file", content=content,
                             size_hint=(0.9, 0.9))
         self._popup.open()
-    
-    def askPasswordDbc(self,path,filename):
-        self.dismiss_popup()
-        if (filename == '' or filename == ' '):
-            return
-        content = AskPassword(submit=self.save,path=path,filename=filename)
+
+    def savefile_manager_open(self):
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.askPasswordDbc,
+            ext=['.zzz']
+        )
+        self.file_manager.show(Upath) # Le répertoire racine
+   
+
+    def askPasswordDbc(self,path):
+        content = AskPassword(submit=self.save,path=path)
         self._popup = Popup(title="Password", content=content,
-                            size_hint=(0.6, 0.25),pos_hint={'top':0.8})
+                            size_hint=(0.6, 0.35),pos_hint={'top':0.8})
         self._popup.open()
+        self.exit_manager()
 
     def save(self,path,filename,password):
         if (len(password) < 14):
@@ -406,6 +413,10 @@ class PMScreen(Screen):
         if ('.dbc' not in filename):
             filename = f'{filename}.dbc'
             createTable()
+        try:
+            self.dismiss_popup()
+        except:
+            pass
         key = hashPassword(password)
         crypt = cryptDatabase(key,path,filename,self.mode)
         if (not crypt):
