@@ -4,7 +4,6 @@ import random
 from cryptography.fernet import Fernet
 import sqlite3
 import os
-"prout"
 
 def random_password(lenght, alpha):
         i = 0

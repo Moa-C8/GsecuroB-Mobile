@@ -25,6 +25,7 @@ from kivymd.uix.templates import RotateWidget
 from kivymd.uix.relativelayout import MDRelativeLayout
 from kivymd.uix.datatables import MDDataTable
 from kivymd.toast import toast
+from kivymd.uix.filemanager import MDFileManager
 
 import sqlite3
 from other import *
@@ -33,6 +34,10 @@ import hashlib
 import random
 import cryptography
 import os
+import mimetypes
+
+mimetypes.add_type('text/plain', '.txt')
+mimetypes.add_type('application/octet-stream', '.dbc')
 
 Upath = ''
 if ( platform == 'android' ):
@@ -40,7 +45,7 @@ if ( platform == 'android' ):
     
 
 elif(platform == 'linux'):
-    Upath = '~'
+    Upath = '/home/moa'
     
 else:
     Upath = '/'
@@ -189,6 +194,32 @@ class MenuScreen(Screen):
             Clock.schedule_once(self.do_anim_hide_btn_Blockchain, 0.05)
             #Clock.schedule_once(self.do_anim_hide_btn_createdb, 0.1)
             
+    def WaitPopup(self):
+        toast("Wait ...")
+
+    def file_manager_open(self):
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.select_path,
+            ext=['.dbc','.txt','.mp3']
+        )
+        self.file_manager.show(Upath) # Le répertoire racine
+        
+    def select_path(self, path):
+        '''Cette méthode est appelée lorsque l'utilisateur sélectionne un fichier ou un dossier.'''
+        if os.path.isdir(path):
+            print('Répertoire sélectionné :', path)
+            contents = os.listdir(path)
+            for item in contents:
+                print(item)
+        else:
+            print('Fichier sélectionné :', path)
+        self.exit_manager()
+    
+    def exit_manager(self, *args):
+        '''Cette méthode est appelée lorsque l'utilisateur ferme le gestionnaire de fichiers.'''
+        self.file_manager.close()
+
 
     #redefinission de taille ou chargement de la page
     def on_size(self, *args):
@@ -607,6 +638,18 @@ class PMScreen(Screen):
                     self.clearBoxes()
                     self.querryDataBase()
 
+    def searchRecords(self):
+        lookupRecord = self.ids.name_field.text
+        self.remove_widget(self.table)
+        conn = sqlite3.connect(tempDB)
+        curs = conn.cursor()
+        sql = "SELECT rowid, * FROM customers WHERE siteOrApp like ?"
+        curs.execute(sql, (lookupRecord,))
+        records = curs.fetchall()
+        self.tables(records)
+        conn.commit()
+        conn.close()
+
 
 
     def genPassword(self,lent):
@@ -643,6 +686,7 @@ sm.add_widget(MenuScreen(name='menu'))
 sm.add_widget(PMScreen(name='pm'))
 
 class GsecuroB(MDApp):
+
     def build(self):
         self.theme_cls.theme_style = "Dark"
         self.theme_cls.primary_palette = "Orange"
@@ -650,11 +694,24 @@ class GsecuroB(MDApp):
         return kv
 
     
-    def on_request_close(self):
-        if (os.path.exists(tempDB)):
-            os.remove(tempDB)
-        self.stop()
-        return True
+
+    def file_manager_open(self):
+        from kivymd.uix.filemanager import MDFileManager
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.select_path,
+            preview=False,
+        )
+        self.file_manager.show('/') # Le répertoire racine
+         
+    def select_path(self, path):
+        '''Cette méthode est appelée lorsque l'utilisateur sélectionne un fichier ou un dossier.'''
+        print(path)
+        self.exit_manager()
+         
+    def exit_manager(self, *args):
+        '''Cette méthode est appelée lorsque l'utilisateur ferme le gestionnaire de fichiers.'''
+        self.file_manager.close()
 
     
 

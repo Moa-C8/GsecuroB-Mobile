@@ -65,7 +65,7 @@ ScreenManager:
         id: btnBlockChain
         type: "small"
         icon: "link-variant"
-        on_press:root.errorFilePopup()
+        on_press:root.file_manager_open()
 
     StackButtonMenu:
         id: btnCreateData
@@ -177,6 +177,7 @@ ScreenManager:
             on_press:root.clearBoxes()
         MDRectangleFlatButton:
             text: "Search in Table"
+            on_press:root.searchRecords()
         MDRoundFlatIconButton:
             size_hint_x:(None)
             width:20
@@ -255,7 +256,7 @@ ScreenManager:
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
-            filters: ['*.dbc']
+            #filters: ['*.dbc','*.txt']
 
         BoxLayout:
             size_hint_y: None
@@ -278,7 +279,7 @@ ScreenManager:
         orientation: "vertical"
         FileChooserListView:
             id: filechooser
-            filters: ['*.dbc']
+            #filters: ['*.dbc','*.txt']
             on_selection: text_input.text = self.selection and self.selection[0] or ''
         MDSeparator:
             width:8
