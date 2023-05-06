@@ -95,6 +95,7 @@ ScreenManager:
     BoxLayout:
         pos_hint:{'y':.465}
         halign: 'center'
+        size: root.size
         Label:
             text: "Password Manager"
             halign: 'center'
@@ -111,8 +112,8 @@ ScreenManager:
 
     ClickableTextFieldRound:
         id:mainPassword  
-        size_hint_x: None
-        width: 500
+        size_hint_x: .45
+        #width: 500
         pos_hint:{'x':.05, 'y':.86}
         hint_text:"Main Password"
         
@@ -188,20 +189,22 @@ ScreenManager:
     BoxLayout:
         orrientation: "horizontal"
         pos_hint: {"y":.68}
+        spacing:10
         MDTextField:
             id: name_field
-            hint_text: "Name"
+            hint_text: "Site/App"
             multiline: False
             mode: "round"
-            size_hint: 0.2, None
+            size_hint_x: .07 
+            size_hint_y:None
             height: "20dp"
             
         MDTextField:
             id: id_field
-            hint_text: "Id / E-mail"
+            hint_text: "Id/E-mail"
             multiline: False
             mode: "round"
-            size_hint: 0.2, None
+            size_hint: 0.12, None
             height: "20dp"
 
         MDTextField:
@@ -209,7 +212,7 @@ ScreenManager:
             hint_text: "Password"
             multiline: False
             mode: "round"
-            size_hint: 0.25, None
+            size_hint: 0.1, None
             height: "20dp"
 
     StackButtonPm:

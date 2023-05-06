@@ -486,9 +486,9 @@ class PMScreen(Screen):
             y=("100dp"),
             size_hint=(0.9,0.5),
             check = True,
-            use_pagination = True,
-            rows_num = 5,
-            pagination_menu_height = '240dp',
+            #use_pagination = True,
+            rows_num = 999,
+            #pagination_menu_height = '60dp',
 
             background_color = [1,0,0],
             column_data = [
@@ -521,8 +521,10 @@ class PMScreen(Screen):
       
     def row_press(self, table, row):
         row_num = int(row.index/len(table.column_data))
+        #print(row.index,len(table.column_data),row.index/len(table.column_data),row)
         row_data = table.row_data[row_num]
         passData = row_data[2]
+        self.ids.name_field.text = row_data[0]
         self.ids.id_field.text = row_data[1]
         self.ids.password_field.text = row_data[2]
         Clipboard.copy(passData)
@@ -604,7 +606,7 @@ class PMScreen(Screen):
                 try:
                     conn = sqlite3.connect(tempDB)
                 except:
-                    return
+                    print("no connection")
                 else:
                     site_app = row[0]
                     id_mail = row[1]
@@ -636,15 +638,17 @@ class PMScreen(Screen):
                     conn.close()
 
                     self.clearBoxes()
+                    self.updateDatble()
                     self.querryDataBase()
+                    
 
     def searchRecords(self):
         lookupRecord = self.ids.name_field.text
+        lookupRecord+= '%'
         self.remove_widget(self.table)
         conn = sqlite3.connect(tempDB)
         curs = conn.cursor()
-        sql = "SELECT rowid, * FROM customers WHERE siteOrApp like ?"
-        curs.execute(sql, (lookupRecord,))
+        curs.execute("SELECT rowid,* FROM customers WHERE siteOrApp like ?", (lookupRecord,))
         records = curs.fetchall()
         self.tables(records)
         conn.commit()
