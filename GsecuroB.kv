@@ -65,7 +65,7 @@ ScreenManager:
         id: btnBlockChain
         type: "small"
         icon: "link-variant"
-        on_press:root.file_manager_open()
+        on_press:root.WaitPopup()
 
     StackButtonMenu:
         id: btnCreateData
@@ -128,7 +128,7 @@ ScreenManager:
         MDRectangleFlatButton:
             id: browseDatabaseBtn
             text: "Browse"
-            on_release: root.show_load()
+            on_press:root.loadfile_manager_open()
         MDRectangleFlatButton:
             id: openTreeviewBtn
             text: "Open"
@@ -235,7 +235,7 @@ ScreenManager:
         id: btnCreateData
         type: "small"
         icon: "script-text-key-outline"
-        on_release: root.show_save()   
+        on_release: root.savefile_manager_open()   
     StackButtonPm:
         id: btnSaveData
         type: "small"
@@ -250,71 +250,8 @@ ScreenManager:
         y: "20dp"
         md_bg_color: app.theme_cls.primary_dark
         on_release: root.anim_btn()
-
-
-<LoadDialog>:
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserListView:
-            id: filechooser
-            #filters: ['*.dbc','*.txt']
-
-        BoxLayout:
-            size_hint_y: None
-            height: 100
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
-
-            Button:
-                text: "Load"
-                on_release: root.load(filechooser.path, filechooser.selection)
-
-<SaveDialog>:
-    text_input: text_input
-    
-    BoxLayout:
-        spacing:10
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserListView:
-            id: filechooser
-            #filters: ['*.dbc','*.txt']
-            on_selection: text_input.text = self.selection and self.selection[0] or ''
-        MDSeparator:
-            width:8
-            color:(47/255,167/255,212/255,1)
-        BoxLayout:
-            size_hint_y: None
-            height: 100
-            Label:
-                text: "Name :"
-                size_hint_x: .2
-                font_size:55
-                bold: True
-            TextInput:
-                id: text_input
-                size_hint_x: .8
-                font_size:55
-                height: 100
-                multiline: False
-
-        BoxLayout:
-            size_hint_y: None
-            height: 100
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
-
-            Button:
-                text: "Save"
-                on_release: root.save(filechooser.path, text_input.text)
     
 <AskPassword>:
-    
     BoxLayout:
         size: root.size
         pos: root.pos
@@ -323,11 +260,17 @@ ScreenManager:
         Label:
             size_hint_y: None
             height: 100
-            text: "it's your main password \n don't loose it \n min 14 character"
+            text: "keep your password \nminimum length 14"
             halign: 'center'
             font: 40
+        MDTextField:
+            id: saveName_input
+            size_hint_y: None
+            hint_text:"Name"
+            height: 100
+            multiline: False
         ClickableTextFieldRound:
-            id: text_input
+            id: savePassword_input
             size_hint_y: None
             hint_text:"Main Password"
             height: 100
@@ -335,7 +278,7 @@ ScreenManager:
 
         Button:
             text: "Submit"
-            on_release: root.submit(root.path, root.filename,text_input.text)
+            on_release: root.submit(root.path, saveName_input.text,savePassword_input.text)
             size_hint_y: None
             height:75
 
