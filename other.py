@@ -78,11 +78,11 @@ def cryptDatabase(key,pathdbc,namedb,mode = ''):
         contentDbFile = dbFile.read()
         dbFile.close()
         if (mode == 'resetP'):
-            if os.path.exists(os.path.join(pathdbc, namedb)):
-                os.remove(os.path.join(pathdbc, namedb))
+            if os.path.exists(pathdbc):
+                os.remove(pathdbc)
         contentDbcFile = f.encrypt(contentDbFile)
         contentDbFile=''
-        dbcFile = open(os.path.join(pathdbc, namedb), 'wb')
+        dbcFile = open(pathdbc, 'wb')
         dbcFile.write(contentDbcFile)
         dbcFile.close()
         if os.path.exists(tempDB):
