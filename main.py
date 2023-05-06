@@ -197,30 +197,6 @@ class MenuScreen(Screen):
     def WaitPopup(self):
         toast("Wait ...")
 
-    def file_manager_open(self):
-        self.file_manager = MDFileManager(
-            exit_manager=self.exit_manager,
-            select_path=self.select_path,
-            ext=['.dbc','.txt']
-        )
-        self.file_manager.show(Upath) # Le répertoire racine
-        
-    def select_path(self, path):
-        '''Cette méthode est appelée lorsque l'utilisateur sélectionne un fichier ou un dossier.'''
-        if os.path.isdir(path):
-            print('Répertoire sélectionné :', path)
-            contents = os.listdir(path)
-            for item in contents:
-                print(item)
-        else:
-            print('Fichier sélectionné :', path)
-        self.exit_manager()
-    
-    def exit_manager(self, *args):
-        '''Cette méthode est appelée lorsque l'utilisateur ferme le gestionnaire de fichiers.'''
-        self.file_manager.close()
-
-
     #redefinission de taille ou chargement de la page
     def on_size(self, *args):
         if self.btn_visible:
@@ -378,17 +354,6 @@ class PMScreen(Screen):
         self.ids.labelopenedManager.text = f'Manager open : {self.data[1]}'
         self.querryDataBase()
 
-    def show_save(self):
-        if(self.ids.browseDatabaseBtn.text != "Browse"):
-            toast("Close this one before")
-            return
-        content = SaveDialog(save=self.askPasswordDbc, cancel=self.dismiss_popup)
-        filechooser = content.ids.filechooser
-        filechooser.path = os.path.expanduser(Upath) # Définit le répertoire initial à ~
-        self._popup = Popup(title="Save file", content=content,
-                            size_hint=(0.9, 0.9))
-        self._popup.open()
-
     def savefile_manager_open(self):
         self.file_manager = MDFileManager(
             exit_manager=self.exit_manager,
@@ -397,7 +362,6 @@ class PMScreen(Screen):
         )
         self.file_manager.show(Upath) # Le répertoire racine
    
-
     def askPasswordDbc(self,path):
         content = AskPassword(submit=self.save,path=path)
         self._popup = Popup(title="Password", content=content,
@@ -663,7 +627,6 @@ class PMScreen(Screen):
                     self.updateDatble()
                     self.querryDataBase()
                     
-
     def searchRecords(self):
         lookupRecord = self.ids.name_field.text
         lookupRecord+= '%'
@@ -675,7 +638,6 @@ class PMScreen(Screen):
         self.tables(records)
         conn.commit()
         conn.close()
-
 
 
     def genPassword(self,lent):
@@ -719,8 +681,6 @@ class GsecuroB(MDApp):
         kv = Builder.load_file('GsecuroB.kv')
         return kv
 
-    
-
     def file_manager_open(self):
         from kivymd.uix.filemanager import MDFileManager
         self.file_manager = MDFileManager(
@@ -743,3 +703,30 @@ class GsecuroB(MDApp):
 
 if __name__ == '__main__':
     GsecuroB().run()
+
+
+
+"""
+    def file_manager_open(self):
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.select_path,
+            ext=['.dbc','.txt']
+        )
+        self.file_manager.show(Upath) # Le répertoire racine
+        
+    def select_path(self, path):
+        '''Cette méthode est appelée lorsque l'utilisateur sélectionne un fichier ou un dossier.'''
+        if os.path.isdir(path):
+            print('Répertoire sélectionné :', path)
+            contents = os.listdir(path)
+            for item in contents:
+                print(item)
+        else:
+            print('Fichier sélectionné :', path)
+        self.exit_manager()
+    
+    def exit_manager(self, *args):
+        '''Cette méthode est appelée lorsque l'utilisateur ferme le gestionnaire de fichiers.'''
+        self.file_manager.close()
+"""

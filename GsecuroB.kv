@@ -65,7 +65,7 @@ ScreenManager:
         id: btnBlockChain
         type: "small"
         icon: "link-variant"
-        on_press:root.file_manager_open()
+        on_press:root.WaitPopup()
 
     StackButtonMenu:
         id: btnCreateData
@@ -250,68 +250,6 @@ ScreenManager:
         y: "20dp"
         md_bg_color: app.theme_cls.primary_dark
         on_release: root.anim_btn()
-
-
-<LoadDialog>:
-    BoxLayout:
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserListView:
-            id: filechooser
-            #filters: ['*.dbc','*.txt']
-
-        BoxLayout:
-            size_hint_y: None
-            height: 100
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
-
-            Button:
-                text: "Load"
-                on_release: root.load(filechooser.path, filechooser.selection)
-
-<SaveDialog>:
-    text_input: text_input
-    
-    BoxLayout:
-        spacing:10
-        size: root.size
-        pos: root.pos
-        orientation: "vertical"
-        FileChooserListView:
-            id: filechooser
-            #filters: ['*.dbc','*.txt']
-            on_selection: text_input.text = self.selection and self.selection[0] or ''
-        MDSeparator:
-            width:8
-            color:(47/255,167/255,212/255,1)
-        BoxLayout:
-            size_hint_y: None
-            height: 100
-            Label:
-                text: "Name :"
-                size_hint_x: .2
-                font_size:55
-                bold: True
-            TextInput:
-                id: text_input
-                size_hint_x: .8
-                font_size:55
-                height: 100
-                multiline: False
-
-        BoxLayout:
-            size_hint_y: None
-            height: 100
-            Button:
-                text: "Cancel"
-                on_release: root.cancel()
-
-            Button:
-                text: "Save"
-                on_release: root.save(filechooser.path, text_input.text)
     
 <AskPassword>:
     BoxLayout:
