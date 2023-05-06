@@ -401,7 +401,7 @@ class PMScreen(Screen):
     def askPasswordDbc(self,path):
         content = AskPassword(submit=self.save,path=path)
         self._popup = Popup(title="Password", content=content,
-                            size_hint=(0.6, 0.35),pos_hint={'top':0.8})
+                            size_hint=(0.6, 0.33),pos_hint={'top':0.8})
         self._popup.open()
         self.exit_manager()
 
