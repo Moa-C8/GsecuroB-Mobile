@@ -322,7 +322,6 @@ class PMScreen(Screen):
             Clock.schedule_once(self.do_anim_hide_btn_passwordGen, 0.1)
             Clock.schedule_once(self.do_anim_hide_btn_save, 0.1)
        
-
     def dismiss_popup(self):
         self._popup.dismiss()
 
@@ -401,7 +400,6 @@ class PMScreen(Screen):
 
     def save(self,path,filename,password):
         if (len(password) < 14):
-            #self.dismiss_popup()
             toast("lenght 14 chars min")
             return
             
@@ -413,7 +411,6 @@ class PMScreen(Screen):
         if (not crypt):
             toast("Wrong file or password")
             return
-        #self.dismiss_popup()
         if (self.mode == 'resetN'):
             if os.path.exists(os.path.join(self.data[0],self.data[1])):
                 os.remove(os.path.join(self.data[0],self.data[1]))
