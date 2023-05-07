@@ -14,6 +14,7 @@ from kivy.clock import Clock
 from kivy.uix.floatlayout import FloatLayout
 from kivy.utils import platform
 from kivy.core.clipboard import Clipboard
+from kivy.utils import get_color_from_hex
 
 
 from plyer import filechooser
@@ -34,6 +35,7 @@ import hashlib
 import random
 import cryptography
 import os
+import shutil
 import mimetypes
 
 mimetypes.add_type('text/plain', '.txt')
@@ -667,18 +669,30 @@ class PMScreen(Screen):
               auto_dismiss=True, size_hint=(0.7, 0.3),pos_hint={'top':0.7})
         popup.open()
 
+
+class SettsScreen(Screen):
+    def changePColor(self,name):
+        for x in name:
+            name = name.replace(" ","")
+        print(name)
+        changeSets(0,name)
     
+    def changeTheme(self,theme):
+        changeSets(1,theme)
+        
 
 sm = ScreenManager()
 sm.add_widget(MenuScreen(name='menu'))
 sm.add_widget(PMScreen(name='pm'))
+sm.add_widget(SettsScreen(name='setts'))
 
 class GsecuroB(MDApp):
 
     def build(self):
-        self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Orange"
-        kv = Builder.load_file('GsecuroB.kv')
+        self.theme_cls.theme_style = readTheme()
+        self.theme_cls.primary_palette = readPrimaryColor()
+        kv = Builder.load_file('src/GsecuroB.kv')
+        
         return kv
 
     def file_manager_open(self):
@@ -699,6 +713,11 @@ class GsecuroB(MDApp):
         '''Cette méthode est appelée lorsque l'utilisateur ferme le gestionnaire de fichiers.'''
         self.file_manager.close()
 
+    def changePColor(self,name):
+        for x in name:
+            name = name.replace(" ","")
+        print(name)
+        changeSets(0,name)
     
 
 if __name__ == '__main__':

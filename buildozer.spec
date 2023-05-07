@@ -13,7 +13,7 @@ package.domain = org.test
 source.dir = .
 
 # (list) Source files to include (let empty to include all the files)
-source.include_exts = py,png,jpg,kv,atlas
+source.include_exts = py,png,jpg,kv,atlas,src/*,txt
 
 # (list) List of inclusions using pattern matching
 #source.include_patterns = assets/*,images/*.png
@@ -44,10 +44,10 @@ requirements = python3,kivy==2.1.0,kivymd,pillow,sqlite3,cryptography,pycparser,
 #requirements.source.kivy = /data/user/0/ru.iiec.pydroid3/files/aarch64-linux-android/bin/pip
 
 # (str) Presplash of the application
-presplash.filename = presplash.png
+presplash.filename = src/presplash.png
 
 # (str) Icon of the application
-icon.filename = icon.png
+icon.filename = src/icon.png
 
 # (list) Supported orientations
 # Valid options are: landscape, portrait, portrait-reverse or landscape-reverse

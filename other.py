@@ -134,13 +134,50 @@ def createTable():
             conn.close()
 
 
+def changeSets(part,sets):
+    file = open('src/settings.txt')
+    cont = file.read()
+    file.close()
+    listSets = cont.split('\n')
+
+    if part == 0:
+        listSets[0] = sets
+    elif part == 1:
+        listSets[1] = sets
+
+    file = open('src/settings.txt','w+')
+    for each in listSets:
+        each= f'{each}\n'
+        file.write(each)
+    file.close()
+
+def readPrimaryColor():
+    file = open('src/settings.txt')
+    cont = file.read()
+    file.close()
+    listSets = cont.split('\n')
+    return colors[int(listSets[0])]
+
+def readTheme():
+    file = open('src/settings.txt')
+    cont = file.read()
+    file.close()
+    listSets = cont.split('\n')
+    return listSets[1]
+
 tempDB = 'qwerty.db'
 
 listExt = ['txt','csv','zip','aac','avi','doc','docx','gif','gz','h','htm','ico','iso','jpeg','mkv','mp3','mp4','odt','odp','ods',
-'odg','pdf','png','pps','py','rar','tar','torrent','xls','xlsx','wav','xml','bat','bmp','exe','.sh']
+'odg','pdf','png','pps','py','rar','tar','torrent','xls','xlsx','wav','xml','bat','bmp','exe','sh']
 
 # Alphabets
 alphabet = string.ascii_letters
 nombre = string.digits
 alphabet_plusMoinSpace =list(string.ascii_letters + string.punctuation + string.digits)
 alphabet_plus = list(string.ascii_letters + string.punctuation + string.digits + " ")
+
+colors = ['Red', 'Pink', 'Purple', 'DeepPurple', 'Indigo', 'Blue', 'LightBlue',
+           'Cyan', 'Teal', 'Green', 'LightGreen', 'Lime', 'Yellow', 
+           'Amber', 'Orange', 'DeepOrange', 'Brown', 'Gray', 'BlueGray']
+themes = ['Dark',"Light"]
+ecranPricipal = ['0,3,9,15,5']

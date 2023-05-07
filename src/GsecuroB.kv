@@ -1,5 +1,138 @@
 #:import Factory kivy.factory.Factory
 
+<ColorPopup@Popup>:
+    auto_dismiss: False
+    title:"Other Colors"
+    size_hint:(.6,.5)
+    pos:root.pos
+    spacing:10
+    BoxLayout:
+        pos_hint_y:(1)
+        orientation:'vertical'
+        MDSeparator:
+            width:5
+
+        GridLayout:
+            spacing:20
+            cols:2
+            rows:8
+            size_hint:(None,.8)
+            pos_hint_y:.7
+            width:'50dp'
+            MDRectangleFlatButton:
+                id:pinkbtn
+                text:"Pink"
+                text_color: "white"
+                line_color: "pink"
+                line_width: 2
+                on_release:
+                    app.changePColor('1')
+            MDRectangleFlatButton:
+                id:purple2btn
+                text:"Purple 2"
+                text_color: "white"
+                line_color: "purple"
+                line_width: 2
+                on_release:
+                    app.changePColor('2')
+            MDRectangleFlatButton:
+                id:indigobtn
+                text:"Indigo"
+                text_color: "white"
+                line_color: "indigo"
+                line_width: 2
+                on_release:
+                    app.changePColor('4')
+            MDRectangleFlatButton:
+                id:lbluebtn
+                text:"LBlue"
+                text_color: "white"
+                line_color: "lightblue"
+                line_width: 2
+                on_release:
+                    app.changePColor('6')
+            MDRectangleFlatButton:
+                id:cyanbtn
+                text:"Cyan"
+                text_color: "white"
+                line_color: (0/255,255/255,255/255,1)
+                line_width: 2
+                on_release:
+                    app.changePColor('7')
+            MDRectangleFlatButton:
+                id:tealbtn
+                text:"Teal"
+                text_color: "white"
+                line_color: (0/255,128/255,128/255,1)
+                line_width: 2
+                on_release:
+                    app.changePColor('8')
+            MDRectangleFlatButton:
+                id:lgreenbtn
+                text:"LGreen"
+                text_color: "white"
+                line_color: (144/255, 238/255, 144/255,1)
+                line_width: 2
+                on_release:
+                    app.changePColor('10')
+            MDRectangleFlatButton:
+                id:limebtn
+                text:"Lime"
+                text_color: "white"
+                line_color: "lime"
+                line_width: 2
+                on_release:
+                    app.changePColor('11')
+            MDRectangleFlatButton:
+                id:yellowbtn
+                text:"Yellow"
+                text_color: "white"
+                line_color: "green"
+                line_width: 2
+                on_release:
+                    app.changePColor('12')
+            MDRectangleFlatButton:
+                text:"Amber"
+                text_color: "white"
+                line_color: (255/255, 194/255, 0/255,1)
+                line_width: 2
+                on_release:
+                    app.changePColor('13')
+            MDRectangleFlatButton:
+                text:"Orange2"
+                text_color: "white"
+                line_color: "orange"
+                line_width: 2
+                on_release:
+                    app.changePColor('14')
+            MDRectangleFlatButton:
+                text:"Brown"
+                text_color: "white"
+                line_color: "brown"
+                line_width: 2
+                on_release:
+                    app.changePColor('16')
+            MDRectangleFlatButton:
+                text:"Gray"
+                text_color: "white"
+                line_color: "gray"
+                line_width: 2
+                on_release:
+                    app.changePColor('17')
+            MDRectangleFlatButton:
+                text:"BlueGray"
+                text_color: "white"
+                line_color: (112/255,128/255,144/255,1)
+                line_width: 2
+                on_release:
+                    app.changePColor('18')
+
+
+        Button:
+            text: 'Close'
+            size_hint_y:.1
+            on_release: root.dismiss()
+
 <StackButtonMenu@MDFloatingActionButton>
     pos: self.parent.center_x - self.width /2 , "50dp"
 
@@ -32,12 +165,13 @@
 ScreenManager:
     MenuScreen:
     PMScreen:
+    SettsScreen:
 
 
 <ScreenManager>:
     canvas.before:
         Color:
-            rgba: (0,0,0,1)
+            rgba: (53/255,57/255,60/255,1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -46,10 +180,19 @@ ScreenManager:
     name:'menu'
     canvas.before:
         Color:
-            rgba: (0,0,0,1)
+            rgba: (53/255,57/255,60/255,1)
         Rectangle:
             pos: self.pos
             size: self.size
+    MDIconButton:
+        pos_hint:{"top":1,"right":1}
+        icon: 'cog'
+        on_release:
+            root.manager.transition.is_active = False
+            root.manager.transition.duration = 0
+            root.manager.current = "setts"
+
+        
 
     StackButtonMenu:
         id: btnPm
@@ -87,7 +230,7 @@ ScreenManager:
     id:pm
     canvas.before:
         Color:
-            rgba: (0,0,0,1)
+            rgba: (53/255,57/255,60/255,1)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -101,9 +244,9 @@ ScreenManager:
             halign: 'center'
             font_size:80
             bold: True
-            color: (255/255,153/255,0/255,1)
+            color:  (1,1,1,1)        #(255/255,153/255,0/255,1)
             outline_width: 1
-            outline_color: (1,1,1)
+            outline_color: (0,0,0)
     MDSeparator:
         pos_hint:{'y':.935}
         width:2
@@ -342,3 +485,109 @@ ScreenManager:
             height:100
             font:64
             on_focus: root.clipboard(passwordgen.text)
+
+<SettsScreen>:
+    name:'setts'
+    canvas.before:
+        Color:
+            rgba: (53/255,57/255,60/255,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+        
+    MDIconButton:
+        pos_hint:{"top":1,"left":1}
+        icon: 'menu'
+        on_release:
+            root.manager.transition.is_active = False
+            root.manager.transition.duration = 0
+            root.manager.current = "menu"
+    
+    BoxLayout:
+        pos_hint:{"y":.4,"center_x":.27}
+        Label:
+            halign:"left"
+            text:"Choose Color :"
+            text_color: (1,1,1)
+            font_size:dp(22)
+            bold:True
+    GridLayout:
+        spacing:20
+        cols:3
+        rows:2
+        pos_hint:{"top":.86,"x":.2}
+        MDRectangleFlatButton:
+            id:orangebtn
+            text:"Orange"
+            text_color: "white"
+            line_color: "darkorange"
+            line_width: 2
+            on_release:
+                root.changePColor('15')
+        MDRectangleFlatButton:
+            id:bluebtn
+            text:"  Blue  "
+            text_color: "white"
+            line_color: "blue"
+            line_width: 2
+            on_release:
+                root.changePColor('5')
+        MDRectangleFlatButton:
+            id:redbtn
+            text:"   Red    "
+            text_color: "white"
+            line_color: "red"
+            line_width: 2
+            on_release:
+                root.changePColor('0')
+        MDRectangleFlatButton:
+            id:greenbtn
+            text:" Green "
+            text_color: "white"
+            line_color: "green"
+            line_width: 2
+            on_release:
+                root.changePColor('9')
+        MDRectangleFlatButton:
+            id:purplebtn
+            text:"Purple"
+            text_color: "white"
+            line_color: "purple"
+            line_width: 2
+            on_release:
+                root.changePColor('3')
+        MDRectangleFlatButton:
+            text:" Other "
+            text_color: "white"
+            line_color: (1, 1, 1)
+            line_width: 2
+            on_release:Factory.ColorPopup().open()
+    BoxLayout:
+        pos_hint:{"y":.2,"center_x":.27}
+        Label:
+            halign:"left"
+            text:"Choose Theme :"
+            text_color: (1,1,1)
+            font_size:dp(22)
+            bold:True
+    GridLayout:
+        spacing:20
+        cols:3
+        rows:2
+        pos_hint:{"top":.66,"x":.33}
+        MDRectangleFlatButton:
+            text:"Dark "
+            text_color: "white"
+            md_bg_color: "black"
+            line_color: (0, 0, 0)
+            line_width: 2
+            on_release:
+                root.changeTheme('Dark')
+        MDRectangleFlatButton:
+            text:"Light"
+            text_color: "black"
+            md_bg_color: "white"
+            line_color: (1, 1, 1)
+            line_width: 2
+            on_release:
+                root.changeTheme('Light')
