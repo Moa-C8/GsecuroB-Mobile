@@ -658,14 +658,102 @@ ScreenManager:
         MDRectangleFlatButton:
             text: "Change Name"
             on_press:root.changeNameDbc()
-            
-
+    
     BoxLayout:
         pos_hint:{'y':.305}
         Label:
             id: labelopenedManager
             text: "SeedPhrase open:"
             font_size:48
+
+    GridLayout:
+        orrientation: "horizontal"
+        cols:2
+        rows:12
+        row_force_default:True
+        row_default_height:125
+        col_force_default:True
+        col_default_width:500
+        spacing:10
+        pos_hint:{'x':.05,'top':.79}
+
+        MDTextField:
+            id: text_field1
+            hint_text: "Word 1"
+        MDTextField:
+            id: text_field2
+            hint_text: "Word 2"
+        MDTextField:
+            id: text_field3
+            hint_text: "Word 3"
+        MDTextField:
+            id: text_field4
+            hint_text: "Word 4"
+        MDTextField:
+            id: text_field5
+            hint_text: "Word 5"
+        MDTextField:
+            id: text_field6
+            hint_text: "Word 6"
+        
+        MDTextField:
+            id: text_field7
+            hint_text: "Word 7"
+        MDTextField:
+            id: text_field8
+            hint_text: "Word 8"
+        MDTextField:
+            id: text_field9
+            hint_text: "Word 9"
+        MDTextField:
+            id: text_field10
+            hint_text: "Word 10"
+        MDTextField:
+            id: text_field11
+            hint_text: "Word 11"
+        MDTextField:
+            id: text_field12
+            hint_text: "Word 12"
+        
+        MDTextField:
+            id: text_field13
+            hint_text: "Word 13"
+        MDTextField:
+            id: text_field14
+            hint_text: "Word 14"
+        MDTextField:
+            id: text_field15
+            hint_text: "Word 15"
+        MDTextField:
+            id: text_field16
+            hint_text: "Word 16"
+        MDTextField:
+            id: text_field17
+            hint_text: "Word 17"
+        MDTextField:
+            id: text_field18
+            hint_text: "Word 18"
+        
+        MDTextField:
+            id: text_field19
+            hint_text: "Word 19"
+        MDTextField:
+            id: text_field20
+            hint_text: "Word 20"
+        MDTextField:
+            id: text_field21
+            hint_text: "Word 21"
+        MDTextField:
+            id: text_field22
+            hint_text: "Word 22"
+        MDTextField:
+            id: text_field23
+            hint_text: "Word 23"
+        MDTextField:
+            id: text_field24
+            hint_text: "Word 24"
+
+        
 
     StackButtonPm:
         id: btnMenu
