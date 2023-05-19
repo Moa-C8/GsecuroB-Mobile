@@ -1,8 +1,8 @@
 # GsecuroB-Mobile
 ## APK not always updated
 
-try this app on your android devices but pleas make a copy of your .dbc just in case of a bug
-we can't actually trust this app 100%
+Try this application on your Android devices but, please, make a copy of your .dbc in case there is a bug.
+we can't trust this application 100%
 
 Be safe
-make Feedback if possible Thanks
+Give feedback if possible Thank you
