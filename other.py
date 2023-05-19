@@ -3,7 +3,7 @@ import hashlib
 import random
 from cryptography.fernet import Fernet
 import sqlite3
-import os
+import os,sys,stat
 
 def random_password(lenght, alpha):
         i = 0
@@ -72,24 +72,33 @@ def cryptDatabase(key,pathdbc,namedb="",mode = ''):
     try:
         f = Fernet(key)
     except:
-        return False
+        return 1
     else:
         dbFile = open(tempDB, 'rb')
         contentDbFile = dbFile.read()
         dbFile.close()
         if (namedb != ""):
-            pathdbc = os.path.join(pathdbc,namedb)
+            pathListed = pathdbc.split('/')
+            print (pathListed)
+            if (pathListed[-1] != namedb):
+                pathdbc = os.path.join(pathdbc,namedb)
+            print("2",pathdbc)
         if (mode == 'resetP'):
             if os.path.exists(pathdbc):
                 os.remove(pathdbc)
         contentDbcFile = f.encrypt(contentDbFile)
         contentDbFile=''
-        dbcFile = open(pathdbc, 'wb')
+        #os.chmod(pathdbc, stat.S_IRWXU)
+        try:
+            dbcFile = open(pathdbc, 'wb')
+        except:
+            return 2
+        os.chmod(pathdbc, stat.S_IRWXU)
         dbcFile.write(contentDbcFile)
         dbcFile.close()
         if os.path.exists(tempDB):
             os.remove(tempDB)
-        return True
+        return 0
 
 def decryptDatabase(key,pathdbc):
     try:

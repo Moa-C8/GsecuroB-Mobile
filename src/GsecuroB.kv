@@ -166,6 +166,7 @@ ScreenManager:
     MenuScreen:
     PMScreen:
     SettsScreen:
+    SeedScreen:
 
 
 <ScreenManager>:
@@ -197,7 +198,6 @@ ScreenManager:
     StackButtonMenu:
         id: btnPm
         icon: "table-lock"
-        text: "SecuroB"
         on_release: 
             root.anim_btn()
             root.manager.transition.is_active = False
@@ -211,9 +211,14 @@ ScreenManager:
         on_press:root.WaitPopup()
 
     StackButtonMenu:
-        id: btnCreateData
+        id: btnSeedPhrase
         type: "small"
-        icon: "alpha-x"
+        icon: "seed-outline"
+        on_release: 
+            root.anim_btn()
+            root.manager.transition.is_active = False
+            root.manager.transition.duration = 0
+            root.manager.current = "seed"
 
     RootButton:
         id: btn_root_menu
@@ -591,3 +596,99 @@ ScreenManager:
             line_width: 2
             on_release:
                 root.changeTheme('Light')
+
+
+<SeedScreen>:
+    name:'seed'
+    canvas.before:
+        Color:
+            rgba: (53/255,57/255,60/255,1)
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+    BoxLayout:
+        pos_hint:{'y':.465}
+        halign: 'center'
+        size: root.size
+        Label:
+            text: "SeedPhrase Manager"
+            halign: 'center'
+            font_size:80
+            bold: True
+            color:  (1,1,1,1)        #(255/255,153/255,0/255,1)
+            outline_width: 1
+            outline_color: (0,0,0)
+    MDSeparator:
+        pos_hint:{'y':.935}
+        width:2
+        color: (255/255,1,1,1)
+    
+    ClickableTextFieldRound:
+        id:mainPassword  
+        size_hint_x: .45
+        #width: 500
+        pos_hint:{'x':.05, 'y':.86}
+        hint_text:"Main Password"
+        
+
+    GridLayout:
+        orrientation: "horizontal"
+        cols:2
+        spacing: 15
+        pos_hint:{'x':.55,'top':.924}
+
+
+        MDRectangleFlatButton:
+            id: browseSeedPhraseBtn
+            text: "Browse"
+            on_press:root.loadfile_SeedPhrase_open()
+        MDRectangleFlatButton:
+            id: openTreeviewBtn
+            text: "Open"
+            #on_release:root.openSeedPhrase()
+    
+    BoxLayout:
+        spacing:10
+        pos_hint:{'y':.825,'x':.194}
+        MDRectangleFlatButton:
+            text: "Reset Password"
+            on_press:root.changePasswordMain()
+        
+        MDRectangleFlatButton:
+            text: "Change Name"
+            on_press:root.changeNameDbc()
+            
+
+    BoxLayout:
+        pos_hint:{'y':.305}
+        Label:
+            id: labelopenedManager
+            text: "SeedPhrase open:"
+            font_size:48
+
+    StackButtonPm:
+        id: btnMenu
+        type: "small"
+        icon: "backburger"
+        x:"300dp"
+        on_release:
+            root.anim_btn()
+            root.manager.transition.is_active = False
+            root.manager.transition.duration = 0
+            root.manager.current = "menu"
+    StackButtonPm:
+        id: btnCreateData
+        x:"300dp"
+        type: "small"
+        icon: "script-text-key-outline"
+        on_release: root.savefile_seedPhrase_open()
+
+    RootButton:
+        id: btn_root_pm
+        icon: "menu"
+        elevation: 0
+        x:"300dp"
+        y: "20dp"
+        md_bg_color: app.theme_cls.primary_dark
+        on_release: root.anim_btn()

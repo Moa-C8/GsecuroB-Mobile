@@ -103,7 +103,7 @@ class MenuScreen(Screen):
     duration = 0.1
 
     #Animation button
-    def do_anim_show_btn_lock(self, *args):
+    def do_anim_show_btn_PassMan(self, *args):
         anim = Animation(
             y=dp(50) + dp(60),
             t="out_circ",
@@ -118,7 +118,7 @@ class MenuScreen(Screen):
         
         anim.start(self.ids.btnPm)
     
-    def do_anim_hide_btn_lock(self, *args):
+    def do_anim_hide_btn_PassMan(self, *args):
         anim = Animation(
             y=dp(50),
             t="out_circ",
@@ -133,7 +133,7 @@ class MenuScreen(Screen):
         
         anim.start(self.ids.btnPm)
 
-    def do_anim_show_btn_createdb(self, *args):
+    def do_anim_show_btn_SeedPhrase(self, *args):
         anim = Animation(
             y=dp(50) + dp(60),
             t="out_circ",
@@ -141,14 +141,14 @@ class MenuScreen(Screen):
             )
         
         anim &= Animation(
-            x=(self.center_x - self.ids.btnCreateData.width /2) - dp(80),
+            x=(self.center_x - self.ids.btnSeedPhrase.width /2) - dp(80),
             t="out_circ",
             d = self.duration,
             )
         
-        anim.start(self.ids.btnCreateData)
+        anim.start(self.ids.btnSeedPhrase)
     
-    def do_anim_hide_btn_createdb(self, *args):
+    def do_anim_hide_btn_SeedPhrase(self, *args):
         anim = Animation(
             y=dp(50),
             t="out_circ",
@@ -156,12 +156,12 @@ class MenuScreen(Screen):
             )
         
         anim &= Animation(
-            x=self.center_x - self.ids.btnCreateData.width /2,
+            x=self.center_x - self.ids.btnSeedPhrase.width /2,
             t="out_circ",
             d = self.duration,
             )
         
-        anim.start(self.ids.btnCreateData)
+        anim.start(self.ids.btnSeedPhrase)
 
     def do_anim_show_btn_Blockchain(self, *args):
         anim = Animation(
@@ -180,6 +180,7 @@ class MenuScreen(Screen):
             )
         
         anim.start(self.ids.btnBlockChain)
+
         
     def anim_btn(self) -> None:
         Animation(rotate_value_angle=90 if not self.btn_visible else 0, d=0.1
@@ -187,14 +188,15 @@ class MenuScreen(Screen):
         self.btn_visible = not self.btn_visible
 
         if self.btn_visible:
-            Clock.schedule_once(self.do_anim_show_btn_lock)
+            Clock.schedule_once(self.do_anim_show_btn_SeedPhrase)
             Clock.schedule_once(self.do_anim_show_btn_Blockchain, 0.05)
-            #Clock.schedule_once(self.do_anim_show_btn_createdb, 0.1)
-            
+            Clock.schedule_once(self.do_anim_show_btn_PassMan, 0.1)
+              
         else:
-            Clock.schedule_once(self.do_anim_hide_btn_lock)
+            Clock.schedule_once(self.do_anim_hide_btn_SeedPhrase)
             Clock.schedule_once(self.do_anim_hide_btn_Blockchain, 0.05)
-            #Clock.schedule_once(self.do_anim_hide_btn_createdb, 0.1)
+            Clock.schedule_once(self.do_anim_hide_btn_PassMan, 0.1)
+            
             
     def WaitPopup(self):
         toast("Wait ...")
@@ -306,8 +308,8 @@ class PMScreen(Screen):
     def loadfile_manager_open(self):
         self.file_manager = MDFileManager(
             exit_manager=self.exit_manager,
-            select_path=self.select_loadpath,
-            ext=['.dbc']
+            select_path=self.select_loadpath
+            #ext=['.dbc']
         )
         self.file_manager.show(Upath) # Le répertoire racine
         
@@ -359,8 +361,7 @@ class PMScreen(Screen):
     def savefile_manager_open(self):
         self.file_manager = MDFileManager(
             exit_manager=self.exit_manager,
-            select_path=self.askPasswordDbc,
-            ext=['.zzz']
+            select_path=self.askPasswordDbc
         )
         self.file_manager.show(Upath) # Le répertoire racine
    
@@ -385,14 +386,24 @@ class PMScreen(Screen):
             pass
         key = hashPassword(password)
         crypt = cryptDatabase(key,path,filename,self.mode)
-        if (not crypt):
-            toast("Wrong file or password")
+        print("1",key,path,filename,self.mode)
+        if (crypt == 1):
+            toast("Wrong file/password")
             return
-        if (self.mode == 'resetN'):
-            if os.path.exists(os.path.join(self.data[0],self.data[1])):
-                os.remove(os.path.join(self.data[0],self.data[1]))
-        if (self.mode == 'resetN' or self.mode == 'resetP'):
-            self.Exit()
+        elif (crypt == 2):
+            toast("Wrong name file")
+            return
+        else:
+            if (self.mode == 'resetN'):
+                if os.path.exists(os.path.join(self.data[0],self.data[1])):
+                    os.remove(os.path.join(self.data[0],self.data[1]))
+            if (self.mode == 'resetN' or self.mode == 'resetP'):
+                self.Exit()
+            try:
+                self.dismiss_popup()
+            except: pass
+            finally: toast("Created")
+            
 
     def PassworGenPopup(self):
         content = GenPassword(submit=self.genPassword, cancel=self.dismiss_popup)
@@ -669,6 +680,135 @@ class PMScreen(Screen):
               auto_dismiss=True, size_hint=(0.7, 0.3),pos_hint={'top':0.7})
         popup.open()
 
+class SeedScreen(Screen):
+    btn_visible = False
+    duration = 0.1
+
+    def do_anim_show_btn_menu(self, *args):
+        anim = Animation(
+            x=dp(300) - dp(70),
+            t="out_circ",
+            d = self.duration,
+            )
+        
+        anim.start(self.ids.btnMenu)
+
+    def do_anim_hide_btn_menu(self, *args):
+        anim = Animation(
+            x=dp(300),
+            t="out_circ",
+            d = self.duration,
+            )
+        
+        anim.start(self.ids.btnMenu)
+
+    def do_anim_show_btn_createdb(self, *args):
+        anim = Animation(
+            x=dp(300) - dp(140),
+            t="out_circ",
+            d = self.duration,
+            )
+        
+        anim.start(self.ids.btnCreateData)
+    
+    def do_anim_hide_btn_createdb(self, *args):
+        anim = Animation(
+            x=dp(300),
+            t="out_circ",
+            d = self.duration,
+            )
+        
+        anim.start(self.ids.btnCreateData)
+
+    def anim_btn(self) -> None:
+        Animation(rotate_value_angle=90 if not self.btn_visible else 0, d=0.1
+                  ).start(self.ids.btn_root_pm)
+        self.btn_visible = not self.btn_visible
+
+        if self.btn_visible:
+            Clock.schedule_once(self.do_anim_show_btn_menu)
+            Clock.schedule_once(self.do_anim_show_btn_createdb, 0.05)
+            #Clock.schedule_once(self.do_anim_show_btn_passwordGen, 0.1)
+            #Clock.schedule_once(self.do_anim_show_btn_save, 0.15)
+        else:
+            Clock.schedule_once(self.do_anim_hide_btn_menu)
+            Clock.schedule_once(self.do_anim_hide_btn_createdb, 0.05)
+            #Clock.schedule_once(self.do_anim_hide_btn_passwordGen, 0.1)
+            #Clock.schedule_once(self.do_anim_hide_btn_save, 0.1)
+
+    def exit_manager(self, *args):
+        self.file_manager.close()
+
+    def savefile_seedPhrase_open(self):
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.askPasswordDbc
+        )
+        self.file_manager.show(Upath)
+   
+    def askPasswordDbc(self,path):
+        content = AskPassword(submit=self.save,path=path)
+        self._popup = Popup(title="Password", content=content,
+                            size_hint=(0.6, 0.33),pos_hint={'top':0.8})
+        self._popup.open()
+        self.exit_manager()
+
+    def save(self,path,filename,password):
+        if (len(password) < 14):
+            toast("lenght 14 chars min")
+            return
+            
+        if ('.dbc' not in filename):
+            filename = f'{filename}.dbc'
+            createTable()
+        try:
+            self.dismiss_popup()
+        except:
+            pass
+        key = hashPassword(password)
+        crypt = cryptDatabase(key,path,filename)
+        print("1",key,path,filename)
+        if (crypt == 1):
+            toast("Wrong file/password")
+            return
+        elif (crypt == 2):
+            toast("Wrong name file")
+            return
+        else:
+            self.dismiss_popup()
+            toast("Created")
+
+    def loadfile_SeedPhrase_open(self):
+        self.file_manager = MDFileManager(
+            exit_manager=self.exit_manager,
+            select_path=self.select_loadpath
+            #ext=['.dbc']
+        )
+        self.file_manager.show(Upath) # Le répertoire racine
+        
+    def select_loadpath(self, path):
+        if os.path.isdir(path):
+            print('Répertoire sélectionné :', path)
+            contents = os.listdir(path)
+            for item in contents:
+                print(item)
+        else:
+            print('Fichier sélectionné :', path)
+            self.load(path)
+        self.exit_manager()
+
+    def load(self, path):
+        print(path)
+        name = getName(path)
+        ext = getExtension(name)
+
+        self.data = [path,name]
+        #self.dismiss_popup()
+        self.ids.browseSeedPhraseBtn.text = 'Browsed'
+
+    def dismiss_popup(self):
+        self._popup.dismiss()
+
 
 class SettsScreen(Screen):
     def changePColor(self,name):
@@ -681,9 +821,11 @@ class SettsScreen(Screen):
         changeSets(1,theme)
         
 
+
 sm = ScreenManager()
 sm.add_widget(MenuScreen(name='menu'))
 sm.add_widget(PMScreen(name='pm'))
+sm.add_widget(SeedScreen(name='seed'))
 sm.add_widget(SettsScreen(name='setts'))
 
 class GsecuroB(MDApp):
@@ -723,29 +865,3 @@ class GsecuroB(MDApp):
 if __name__ == '__main__':
     GsecuroB().run()
 
-
-
-"""
-    def file_manager_open(self):
-        self.file_manager = MDFileManager(
-            exit_manager=self.exit_manager,
-            select_path=self.select_path,
-            ext=['.dbc','.txt']
-        )
-        self.file_manager.show(Upath) # Le répertoire racine
-        
-    def select_path(self, path):
-        '''Cette méthode est appelée lorsque l'utilisateur sélectionne un fichier ou un dossier.'''
-        if os.path.isdir(path):
-            print('Répertoire sélectionné :', path)
-            contents = os.listdir(path)
-            for item in contents:
-                print(item)
-        else:
-            print('Fichier sélectionné :', path)
-        self.exit_manager()
-    
-    def exit_manager(self, *args):
-        '''Cette méthode est appelée lorsque l'utilisateur ferme le gestionnaire de fichiers.'''
-        self.file_manager.close()
-"""
