@@ -314,14 +314,11 @@ class PMScreen(Screen):
         self.file_manager.show(Upath) # Le répertoire racine
         
     def select_loadpath(self, path):
-        '''Cette méthode est appelée lorsque l'utilisateur sélectionne un fichier ou un dossier.'''
         if os.path.isdir(path):
-            print('Répertoire sélectionné :', path)
+            #print('Répertoire sélectionné :', path)
             contents = os.listdir(path)
-            for item in contents:
-                print(item)
         else:
-            print('Fichier sélectionné :', path)
+            #print('Fichier sélectionné :', path)
             self.load(path)
         self.exit_manager()
     
@@ -331,7 +328,7 @@ class PMScreen(Screen):
 
 
     def load(self, path):
-        print(path)
+        #print(path)
         name = getName(path)
         ext = getExtension(name)
 
@@ -386,7 +383,7 @@ class PMScreen(Screen):
             pass
         key = hashPassword(password)
         crypt = cryptDatabase(key=key,pathdbc=path,namedb=filename,mode=self.mode,types='db')
-        print("1",key,path,filename,self.mode)
+        #print("1",key,path,filename,self.mode)
         if (crypt == 1):
             toast("Wrong file/password")
             return
@@ -611,7 +608,8 @@ class PMScreen(Screen):
                 try:
                     conn = sqlite3.connect(tempDB)
                 except:
-                    print("no connection")
+                    #print("no connection")
+                    return
                 else:
                     site_app = row[0]
                     id_mail = row[1]
@@ -674,12 +672,16 @@ class PMScreen(Screen):
         if self.btn_visible:
             self.anim_btn()
         self.tables()
+        if (os.path.exists(tempFile)):
+            os.remove(tempFile)
         if (os.path.exists(tempDB)):
             os.remove(tempDB)
 
     def on_pause(self, *args):
         if (os.path.exists(tempDB)):
             os.remove(tempDB)
+        if (os.path.exists(tempFile)):
+            os.remove(tempFile)
     
     def errorFilePopup(self, args=[]):
         popup = Popup(title=f'Problem {args[0]}', content=Label(text=args[1],halign='center'),
@@ -810,7 +812,7 @@ class SeedScreen(Screen):
             pass
         key = hashPassword(password)
         crypt = cryptDatabase(key=key,pathdbc=path,namedb=filename,types='tx')
-        print("1",key,path,filename)
+        #print("1",key,path,filename)
         if (crypt == 1):
             toast("Wrong file/password")
             return
@@ -818,7 +820,10 @@ class SeedScreen(Screen):
             toast("Wrong name file")
             return
         else:
-            self.dismiss_popup()
+            try:
+                self.dismiss_popup()
+            except:
+                return
             toast("Created")
 
     def loadfile_SeedPhrase_open(self):
@@ -831,17 +836,17 @@ class SeedScreen(Screen):
         
     def select_loadpath(self, path):
         if os.path.isdir(path):
-            print('Répertoire sélectionné :', path)
+            #print('Répertoire sélectionné :', path)
             contents = os.listdir(path)
             for item in contents:
                 print(item)
         else:
-            print('Fichier sélectionné :', path)
+            #print('Fichier sélectionné :', path)
             self.load(path)
         self.exit_manager()
 
     def load(self, path):
-        print(path)
+        #print(path)
         name = getName(path)
         ext = getExtension(name)
 
@@ -877,10 +882,10 @@ class SeedScreen(Screen):
         if (not dcrypt):
             toast("Wrong file or password")
             return
-
+        
+        self.makeListFromFile()
         self.ids.openSeedInBtn.text = 'Opened'
         self.ids.labelopenedSManager.text = f'Seeds open : {self.data[1]}'
-        self.querrySeeds()
 
     def querrySeeds(self):
         file = open(tempFile,'rb')
@@ -893,7 +898,14 @@ class SeedScreen(Screen):
             self.ids.browseSeedPhraseBtn.text = 'Browse'
             toast("Probably Password Manager File")
             return
+        contFile = self.listAllInputs()
         print(contFile)
+        file = open(tempFile,'wb')
+        for all in contFile:
+            #print(all)
+            file.write(all)
+            file.write(b',')
+        file.close()
 
     def clearAllInputs(self):
             self.ids.text_field1.text = ""
@@ -921,18 +933,116 @@ class SeedScreen(Screen):
             self.ids.text_field23.text = ""
             self.ids.text_field24.text = ""
 
+    def listAllInputs(self):
+        listWords =[self.ids.text_field1.text ,
+            self.ids.text_field2.text ,
+            self.ids.text_field3.text ,
+            self.ids.text_field4.text ,
+            self.ids.text_field5.text ,
+            self.ids.text_field6.text ,
+            self.ids.text_field7.text ,
+            self.ids.text_field8.text ,
+            self.ids.text_field9.text ,
+            self.ids.text_field10.text ,
+            self.ids.text_field11.text ,
+            self.ids.text_field12.text ,
+            self.ids.text_field13.text ,
+            self.ids.text_field14.text ,
+            self.ids.text_field15.text ,
+            self.ids.text_field16.text ,
+            self.ids.text_field17.text ,
+            self.ids.text_field18.text ,
+            self.ids.text_field19.text ,
+            self.ids.text_field20.text ,
+            self.ids.text_field21.text ,
+            self.ids.text_field22.text ,
+            self.ids.text_field23.text ,
+            self.ids.text_field24.text]
+        print(listWords)
+        for i in range(len(listWords)):
+            listWords[i] = listWords[i].encode('utf-8')
+        print(listWords)
+        return listWords
+
     def saveAndExit(self):
-        print(self.data)
+        #print(self.data)
+        self.querrySeeds()
+        self.clearAllInputs()
+        if os.path.exists(self.data[0]):
+            os.remove(self.data[0])
+        self.ids.openSeedInBtn.text = 'Open'
+        self.ids.labelopenedSManager.text = 'Seeds open :'
+        self.ids.browseSeedPhraseBtn.text = 'Browse'
+        self.save(self.data[0],self.data[1],self.ids.mainPassword.text)
+        if os.path.exists(self.data[0]):
+            try:
+                os.remove(tempFile)
+            except:pass
+        else:
+            toast("Problem with save not saved")
+            return
+        self.data= []
+        self.ids.mainPassword.text=""
+
+    def makeListFromFile(self):
+        file = open(tempFile,'rb')
+        contFile = file.read()
+        file.close()
+        liste = contFile.decode()
+        liste = liste.split(',')
+        try:
+            self.putWordInInput(liste)
+        except:pass
+
+    def putWordInInput(self,liste):
+        self.ids.text_field1.text = liste[0]
+        self.ids.text_field2.text = liste[1]
+        self.ids.text_field3.text = liste[2]
+        self.ids.text_field4.text = liste[3]
+        self.ids.text_field5.text = liste[4]
+        self.ids.text_field6.text = liste[5]
+        self.ids.text_field7.text = liste[6]
+        self.ids.text_field8.text = liste[7]
+        self.ids.text_field9.text = liste[8]
+        self.ids.text_field10.text = liste[9]
+        self.ids.text_field11.text = liste[10]
+        self.ids.text_field12.text = liste[11]
+        self.ids.text_field13.text = liste[12]
+        self.ids.text_field14.text = liste[13]
+        self.ids.text_field15.text = liste[14]
+        self.ids.text_field16.text = liste[15]
+        self.ids.text_field17.text = liste[16]
+        self.ids.text_field18.text = liste[17]
+        self.ids.text_field19.text = liste[18]
+        self.ids.text_field20.text = liste[19]
+        self.ids.text_field21.text = liste[20]
+        self.ids.text_field22.text = liste[21]
+        self.ids.text_field23.text = liste[22]
+        self.ids.text_field24.text = liste[23]
 
     def dismiss_popup(self):
         self._popup.dismiss()
+
+    def on_pause(self, *args):
+        if (os.path.exists(tempDB)):
+            os.remove(tempDB)
+        if (os.path.exists(tempFile)):
+            os.remove(tempFile)
+    
+    def on_size(self, *args):
+        if self.btn_visible:
+            self.anim_btn()
+        if (os.path.exists(tempDB)):
+            os.remove(tempDB)
+        if (os.path.exists(tempFile)):
+            os.remove(tempFile)
 
 
 class SettsScreen(Screen):
     def changePColor(self,name):
         for x in name:
             name = name.replace(" ","")
-        print(name)
+        #print(name)
         changeSets(0,name)
     
     def changeTheme(self,theme):
@@ -966,17 +1076,23 @@ class GsecuroB(MDApp):
          
     def select_path(self, path):
         '''Cette méthode est appelée lorsque l'utilisateur sélectionne un fichier ou un dossier.'''
-        print(path)
+        #print(path)
         self.exit_manager()
          
     def exit_manager(self, *args):
         '''Cette méthode est appelée lorsque l'utilisateur ferme le gestionnaire de fichiers.'''
         self.file_manager.close()
 
+    def on_stop(self):
+        if (os.path.exists(tempFile)):
+            os.remove(tempFile)
+        if (os.path.exists(tempDB)):
+            os.remove(tempDB)
+        return True
     def changePColor(self,name):
         for x in name:
             name = name.replace(" ","")
-        print(name)
+        #print(name)
         changeSets(0,name)
     
 
