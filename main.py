@@ -720,6 +720,43 @@ class SeedScreen(Screen):
         
         anim.start(self.ids.btnCreateData)
 
+    def do_anim_show_btn_passwordGen(self, *args):
+        anim = Animation(
+            x=dp(300) - dp(210),
+            t="out_circ",
+            d = self.duration,
+            )
+        
+        anim.start(self.ids.btnPss)
+    
+    def do_anim_hide_btn_passwordGen(self, *args):
+        anim = Animation(
+            x=dp(300),
+            t="out_circ",
+            d = self.duration,
+            )
+        
+        anim.start(self.ids.btnPss)
+
+    def do_anim_show_btn_save(self, *args):
+        anim = Animation(
+            x=dp(300) - dp(280),
+            t="out_circ",
+            d = self.duration,
+            )
+        
+        anim.start(self.ids.btnSaveData)
+    
+    def do_anim_hide_btn_save(self, *args):
+        anim = Animation(
+            x=dp(300),
+            t="out_circ",
+            d = self.duration,
+            )
+        
+        anim.start(self.ids.btnSaveData)
+
+
     def anim_btn(self) -> None:
         Animation(rotate_value_angle=90 if not self.btn_visible else 0, d=0.1
                   ).start(self.ids.btn_root_pm)
@@ -728,13 +765,13 @@ class SeedScreen(Screen):
         if self.btn_visible:
             Clock.schedule_once(self.do_anim_show_btn_menu)
             Clock.schedule_once(self.do_anim_show_btn_createdb, 0.05)
-            #Clock.schedule_once(self.do_anim_show_btn_passwordGen, 0.1)
-            #Clock.schedule_once(self.do_anim_show_btn_save, 0.15)
+            Clock.schedule_once(self.do_anim_show_btn_passwordGen, 0.1)
+            Clock.schedule_once(self.do_anim_show_btn_save, 0.15)
         else:
             Clock.schedule_once(self.do_anim_hide_btn_menu)
             Clock.schedule_once(self.do_anim_hide_btn_createdb, 0.05)
-            #Clock.schedule_once(self.do_anim_hide_btn_passwordGen, 0.1)
-            #Clock.schedule_once(self.do_anim_hide_btn_save, 0.1)
+            Clock.schedule_once(self.do_anim_hide_btn_passwordGen, 0.1)
+            Clock.schedule_once(self.do_anim_hide_btn_save, 0.1)
 
     def exit_manager(self, *args):
         self.file_manager.close()
@@ -760,7 +797,7 @@ class SeedScreen(Screen):
             
         if ('.dbc' not in filename):
             filename = f'{filename}.dbc'
-            createTable()
+            createSeed()
         try:
             self.dismiss_popup()
         except:
@@ -805,6 +842,21 @@ class SeedScreen(Screen):
         self.data = [path,name]
         #self.dismiss_popup()
         self.ids.browseSeedPhraseBtn.text = 'Browsed'
+
+    def PassworGenPopup(self):
+        content = GenPassword(submit=self.genPassword, cancel=self.dismiss_popup)
+        popup = Popup(title=f'Password Generator', content=content,
+              auto_dismiss=True, size_hint=(0.7, 0.3),pos_hint={'top':0.7})
+        popup.open()
+    
+    def genPassword(self,lent):
+        lent = int(lent)
+        if (lent < 14):
+            return
+        password = random_password(lent,alphabet_plus )
+        self.ids.passwordgen.text = ''
+        self.ids.passwordgen.text = password
+
 
     def dismiss_popup(self):
         self._popup.dismiss()

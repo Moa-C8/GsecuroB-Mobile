@@ -771,6 +771,19 @@ ScreenManager:
         type: "small"
         icon: "script-text-key-outline"
         on_release: root.savefile_seedPhrase_open()
+    
+    StackButtonPm:
+        id: btnPss
+        x:"300dp"
+        icon: "key-variant"
+        on_release: root.PassworGenPopup()
+    
+    StackButtonPm:
+        id: btnSaveData
+        type: "small"
+        x:"300dp"
+        icon: "content-save-move"
+        on_release: root.saveAndExitData()
 
     RootButton:
         id: btn_root_pm

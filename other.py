@@ -74,31 +74,39 @@ def cryptDatabase(key,pathdbc,namedb="",mode = ''):
     except:
         return 1
     else:
-        dbFile = open(tempDB, 'rb')
-        contentDbFile = dbFile.read()
-        dbFile.close()
-        if (namedb != ""):
-            pathListed = pathdbc.split('/')
-            print (pathListed)
-            if (pathListed[-1] != namedb):
-                pathdbc = os.path.join(pathdbc,namedb)
-            print("2",pathdbc)
-        if (mode == 'resetP'):
-            if os.path.exists(pathdbc):
-                os.remove(pathdbc)
-        contentDbcFile = f.encrypt(contentDbFile)
-        contentDbFile=''
-        #os.chmod(pathdbc, stat.S_IRWXU)
         try:
-            dbcFile = open(pathdbc, 'wb')
-        except:
-            return 2
-        os.chmod(pathdbc, stat.S_IRWXU)
-        dbcFile.write(contentDbcFile)
-        dbcFile.close()
-        if os.path.exists(tempDB):
-            os.remove(tempDB)
-        return 0
+            dbFile = open(tempDB, 'rb')
+        except: 
+            try:
+                    dbFile = open(tempFile, 'rb')
+            except:return 2
+            else:
+                contentDbFile = dbFile.read()
+                dbFile.close()
+                if (namedb != ""):
+                    pathListed = pathdbc.split('/')
+                    print (pathListed)
+                    if (pathListed[-1] != namedb):
+                        pathdbc = os.path.join(pathdbc,namedb)
+                    print("2",pathdbc)
+                if (mode == 'resetP'):
+                    if os.path.exists(pathdbc):
+                        os.remove(pathdbc)
+                contentDbcFile = f.encrypt(contentDbFile)
+                contentDbFile=''
+                #os.chmod(pathdbc, stat.S_IRWXU)
+                try:
+                    dbcFile = open(pathdbc, 'wb')
+                except:
+                    return 2
+                os.chmod(pathdbc, stat.S_IRWXU)
+                dbcFile.write(contentDbcFile)
+                dbcFile.close()
+                if os.path.exists(tempDB):
+                    os.remove(tempDB)
+                if os.path.exists(tempFile):
+                    os.remove(tempFile)
+                return 0
 
 def decryptDatabase(key,pathdbc):
     try:
@@ -117,10 +125,16 @@ def decryptDatabase(key,pathdbc):
     except:
         return False
     else:
-        dbFile = open(tempDB, 'wb')
-        dbFile.write(contentDbFile)
-        dbFile.close()
-        return True
+        try:
+            dbFile = open(tempDB, 'wb')
+        except:
+            try:
+                dbFile = open(tempFile, 'wb')
+            except: return False
+        else:
+            dbFile.write(contentDbFile)
+            dbFile.close()
+            return True
 
 def createTable():
         try:
@@ -142,6 +156,8 @@ def createTable():
 
             conn.close()
 
+def createSeed():
+    fil = open(tempFile)
 
 def changeSets(part,sets):
     file = open('src/settings.txt')
@@ -175,6 +191,7 @@ def readTheme():
     return listSets[1]
 
 tempDB = 'qwerty.db'
+tempFile = 'azerty'
 
 listExt = ['txt','csv','zip','aac','avi','doc','docx','gif','gz','h','htm','ico','iso','jpeg','mkv','mp3','mp4','odt','odp','ods',
 'odg','pdf','png','pps','py','rar','tar','torrent','xls','xlsx','wav','xml','bat','bmp','exe','sh']
