@@ -344,12 +344,12 @@ class PMScreen(Screen):
             toast("Close this one before")
             return
         password = self.ids.mainPassword.text
-        if(password == '' or password == ' ' or len(password)< 14):
-            toast("Lenght 14 chars min")
+        if(len(password)>99):
+            toast("Lenght 99 chars max")
             return
         key = hashPassword(password)
         password = ''
-        dcrypt = decryptDatabase(key,self.data[0])
+        dcrypt = decryptDatabase(key,self.data[0],'db')
         if (not dcrypt):
             toast("Wrong file or password")
             return
@@ -385,7 +385,7 @@ class PMScreen(Screen):
         except:
             pass
         key = hashPassword(password)
-        crypt = cryptDatabase(key,path,filename,self.mode)
+        crypt = cryptDatabase(key=key,pathdbc=path,namedb=filename,mode=self.mode,types='db')
         print("1",key,path,filename,self.mode)
         if (crypt == 1):
             toast("Wrong file/password")
@@ -567,13 +567,19 @@ class PMScreen(Screen):
             return
         else:
             curs = conn.cursor()
-            curs.execute('SELECT rowid, * FROM customers')
-            records = curs.fetchall()
+            try:
+                curs.execute('SELECT rowid, * FROM customers')
+            except:
+                toast("Probably Seed File")
+                self.ids.browseDatabaseBtn.text = 'Browse'
+                return
+            else:
+                records = curs.fetchall()
 
-            self.tables(records)
+                self.tables(records)
 
-            conn.commit()
-            conn.close()
+                conn.commit()
+                conn.close()
 
     def removeRecordSelected(self):
         listId = []
@@ -803,7 +809,7 @@ class SeedScreen(Screen):
         except:
             pass
         key = hashPassword(password)
-        crypt = cryptDatabase(key,path,filename)
+        crypt = cryptDatabase(key=key,pathdbc=path,namedb=filename,types='tx')
         print("1",key,path,filename)
         if (crypt == 1):
             toast("Wrong file/password")
@@ -857,6 +863,66 @@ class SeedScreen(Screen):
         self.ids.passwordgen.text = ''
         self.ids.passwordgen.text = password
 
+    def openSeedPhrase(self):
+        if (self.ids.openSeedInBtn.text != 'Open'):
+            toast("Close this one before")
+            return
+        password = self.ids.mainPassword.text
+        if(len(password)>99):
+            toast("Lenght 99 chars max")
+            return
+        key = hashPassword(password)
+        password = ''
+        dcrypt = decryptDatabase(key,self.data[0],'tx')
+        if (not dcrypt):
+            toast("Wrong file or password")
+            return
+
+        self.ids.openSeedInBtn.text = 'Opened'
+        self.ids.labelopenedSManager.text = f'Seeds open : {self.data[1]}'
+        self.querrySeeds()
+
+    def querrySeeds(self):
+        file = open(tempFile,'rb')
+        contFile = file.read()
+        file.close()
+        if b"SQLite" in contFile:
+            contFile = ""
+            self.ids.openSeedInBtn.text = 'Open'
+            self.ids.labelopenedSManager.text = 'Seeds open :'
+            self.ids.browseSeedPhraseBtn.text = 'Browse'
+            toast("Probably Password Manager File")
+            return
+        print(contFile)
+
+    def clearAllInputs(self):
+            self.ids.text_field1.text = ""
+            self.ids.text_field2.text = ""
+            self.ids.text_field3.text = ""
+            self.ids.text_field4.text = ""
+            self.ids.text_field5.text = ""
+            self.ids.text_field6.text = ""
+            self.ids.text_field7.text = ""
+            self.ids.text_field8.text = ""
+            self.ids.text_field9.text = ""
+            self.ids.text_field10.text = ""
+            self.ids.text_field11.text = ""
+            self.ids.text_field12.text = ""
+            self.ids.text_field13.text = ""
+            self.ids.text_field14.text = ""
+            self.ids.text_field15.text = ""
+            self.ids.text_field16.text = ""
+            self.ids.text_field17.text = ""
+            self.ids.text_field18.text = ""
+            self.ids.text_field19.text = ""
+            self.ids.text_field20.text = ""
+            self.ids.text_field21.text = ""
+            self.ids.text_field22.text = ""
+            self.ids.text_field23.text = ""
+            self.ids.text_field24.text = ""
+
+    def saveAndExit(self):
+        print(self.data)
 
     def dismiss_popup(self):
         self._popup.dismiss()

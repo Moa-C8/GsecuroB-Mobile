@@ -388,7 +388,7 @@ ScreenManager:
         id: btnSaveData
         type: "small"
         icon: "content-save-move"
-        on_release: root.saveAndExitData()
+        on_release: root.saveAndExit()
 
     RootButton:
         id: btn_root_pm
@@ -644,9 +644,9 @@ ScreenManager:
             text: "Browse"
             on_press:root.loadfile_SeedPhrase_open()
         MDRectangleFlatButton:
-            id: openTreeviewBtn
+            id: openSeedInBtn
             text: "Open"
-            #on_release:root.openSeedPhrase()
+            on_release:root.openSeedPhrase()
     
     BoxLayout:
         spacing:10
@@ -662,8 +662,8 @@ ScreenManager:
     BoxLayout:
         pos_hint:{'y':.305}
         Label:
-            id: labelopenedManager
-            text: "SeedPhrase open:"
+            id: labelopenedSManager
+            text: "Seeds open:"
             font_size:48
 
     GridLayout:

@@ -68,47 +68,47 @@ def hashPassword(password):
 
     return key
 
-def cryptDatabase(key,pathdbc,namedb="",mode = ''):
+def cryptDatabase(key,pathdbc,types,namedb="",mode = ''):
     try:
         f = Fernet(key)
     except:
         return 1
     else:
-        try:
+        if (types=="db"):
             dbFile = open(tempDB, 'rb')
-        except: 
-            try:
-                    dbFile = open(tempFile, 'rb')
-            except:return 2
-            else:
-                contentDbFile = dbFile.read()
-                dbFile.close()
-                if (namedb != ""):
-                    pathListed = pathdbc.split('/')
-                    print (pathListed)
-                    if (pathListed[-1] != namedb):
-                        pathdbc = os.path.join(pathdbc,namedb)
-                    print("2",pathdbc)
-                if (mode == 'resetP'):
-                    if os.path.exists(pathdbc):
-                        os.remove(pathdbc)
-                contentDbcFile = f.encrypt(contentDbFile)
-                contentDbFile=''
-                #os.chmod(pathdbc, stat.S_IRWXU)
-                try:
-                    dbcFile = open(pathdbc, 'wb')
-                except:
-                    return 2
-                os.chmod(pathdbc, stat.S_IRWXU)
-                dbcFile.write(contentDbcFile)
-                dbcFile.close()
-                if os.path.exists(tempDB):
-                    os.remove(tempDB)
-                if os.path.exists(tempFile):
-                    os.remove(tempFile)
-                return 0
+        elif (types=='tx'):
+                dbFile = open(tempFile, 'rb')
+        else:
+            return 1
+        contentDbFile = dbFile.read()
+        dbFile.close()
+        if (namedb != ""):
+            pathListed = pathdbc.split('/')
+            print (pathListed)
+            if (pathListed[-1] != namedb):
+                pathdbc = os.path.join(pathdbc,namedb)
+            print("2",pathdbc)
+        if (mode == 'resetP'):
+            if os.path.exists(pathdbc):
+                os.remove(pathdbc)
+        contentDbcFile = f.encrypt(contentDbFile)
+        contentDbFile=''
+        #os.chmod(pathdbc, stat.S_IRWXU)
+        try:
+            dbcFile = open(pathdbc, 'wb')
+        except:
+            return 2
+        os.chmod(pathdbc, stat.S_IRWXU)
+        dbcFile.write(contentDbcFile)
+        dbcFile.close()
+        if os.path.exists(tempDB):
+            os.remove(tempDB)
+        if os.path.exists(tempFile):
+            os.remove(tempFile)
+        return 0
+        
 
-def decryptDatabase(key,pathdbc):
+def decryptDatabase(key,pathdbc,type):
     try:
         f = Fernet(key)
     except:
@@ -125,14 +125,18 @@ def decryptDatabase(key,pathdbc):
     except:
         return False
     else:
-        try:
+        if (type == "db"):
             dbFile = open(tempDB, 'wb')
-        except:
-            try:
+        elif (type == "tx"):
                 dbFile = open(tempFile, 'wb')
-            except: return False
         else:
+            return False
+        try:
             dbFile.write(contentDbFile)
+        except:
+            dbFile.close()
+            return False
+        else:
             dbFile.close()
             return True
 
@@ -157,7 +161,8 @@ def createTable():
             conn.close()
 
 def createSeed():
-    fil = open(tempFile)
+    fil = open(tempFile,"wb")
+    fil.close()
 
 def changeSets(part,sets):
     file = open('src/settings.txt')
@@ -191,7 +196,7 @@ def readTheme():
     return listSets[1]
 
 tempDB = 'qwerty.db'
-tempFile = 'azerty'
+tempFile = 'azerty.txt'
 
 listExt = ['txt','csv','zip','aac','avi','doc','docx','gif','gz','h','htm','ico','iso','jpeg','mkv','mp3','mp4','odt','odp','ods',
 'odg','pdf','png','pps','py','rar','tar','torrent','xls','xlsx','wav','xml','bat','bmp','exe','sh']
