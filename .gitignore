@@ -4,3 +4,4 @@ bin
 *.db
 la
 .vscode
+src/GsecuroB*.kv

@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = GsecuroB
+title = GsecuroBV2
 
 # (str) Package name
 package.name = myapp
