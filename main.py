@@ -337,23 +337,26 @@ class PMScreen(Screen):
         self.ids.browseDatabaseBtn.text = 'Browsed'
     
     def openDbcToTable(self):
-        if (self.ids.openTreeviewBtn.text != 'Open'):
-            toast("Close this one before")
-            return
-        password = self.ids.mainPassword.text
-        if(len(password)>99):
-            toast("Lenght 99 chars max")
-            return
-        key = hashPassword(password)
-        password = ''
-        dcrypt = decryptDatabase(key,self.data[0],'db')
-        if (not dcrypt):
-            toast("Wrong file or password")
-            return
+        try:
+            if (self.ids.openTreeviewBtn.text != 'Open'):
+                toast("Close this one before")
+                return
+            password = self.ids.mainPassword.text
+            if(len(password)>99):
+                toast("Lenght 99 chars max")
+                return
+            key = hashPassword(password)
+            password = ''
+            dcrypt = decryptDatabase(key,self.data[0],'db')
+            if (not dcrypt):
+                toast("Wrong file or password")
+                return
 
-        self.ids.openTreeviewBtn.text = 'Opened'
-        self.ids.labelopenedManager.text = f'Manager open : {self.data[1]}'
-        self.querryDataBase()
+            self.ids.openTreeviewBtn.text = 'Opened'
+            self.ids.labelopenedManager.text = f'Manager open : {self.data[1]}'
+            self.querryDataBase()
+        except:
+            random_password
 
     def savefile_manager_open(self):
         self.file_manager = MDFileManager(
@@ -869,23 +872,26 @@ class SeedScreen(Screen):
         self.ids.passwordgen.text = password
 
     def openSeedPhrase(self):
-        if (self.ids.openSeedInBtn.text != 'Open'):
-            toast("Close this one before")
-            return
-        password = self.ids.mainPassword.text
-        if(len(password)>99):
-            toast("Lenght 99 chars max")
-            return
-        key = hashPassword(password)
-        password = ''
-        dcrypt = decryptDatabase(key,self.data[0],'tx')
-        if (not dcrypt):
-            toast("Wrong file or password")
-            return
-        
-        self.makeListFromFile()
-        self.ids.openSeedInBtn.text = 'Opened'
-        self.ids.labelopenedSManager.text = f'Seeds open : {self.data[1]}'
+        try:
+            if (self.ids.openSeedInBtn.text != 'Open'):
+                toast("Close this one before")
+                return
+            password = self.ids.mainPassword.text
+            if(len(password)>99):
+                toast("Lenght 99 chars max")
+                return
+            key = hashPassword(password)
+            password = ''
+            dcrypt = decryptDatabase(key,self.data[0],'tx')
+            if (not dcrypt):
+                toast("Wrong file or password")
+                return
+            
+            self.makeListFromFile()
+            self.ids.openSeedInBtn.text = 'Opened'
+            self.ids.labelopenedSManager.text = f'Seeds open : {self.data[1]}'
+        except:
+            pass
 
     def querrySeeds(self):
         file = open(tempFile,'rb')
