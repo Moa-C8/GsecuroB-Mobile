@@ -84,10 +84,14 @@ def cryptDatabase(key,pathdbc,types,namedb="",mode = ''):
         dbFile.close()
         if (namedb != ""):
             pathListed = pathdbc.split('/')
-            #print (pathListed)
+            print (pathListed)
             if (pathListed[-1] != namedb):
+                pathListed = pathListed[:-1]
+                lstElement = [str(element) for element in pathListed]
+                pathdbc= '/'
+                pathdbc = "/".join(lstElement)
                 pathdbc = os.path.join(pathdbc,namedb)
-            #print("2",pathdbc)
+            print("2",pathdbc)
         if (mode == 'resetP'):
             if os.path.exists(pathdbc):
                 os.remove(pathdbc)

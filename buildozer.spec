@@ -1,7 +1,7 @@
 [app]
 
 # (str) Title of your application
-title = GsecuroBV2
+title = GsecuroB
 
 # (str) Package name
 package.name = myapp
@@ -29,7 +29,7 @@ source.include_exts = py,png,jpg,kv,atlas,src/*,txt
 #source.exclude_patterns = license,images/*/*.jpg
 
 # (str) Application versioning (method 1)
-version = 0.1
+version = 1
 
 # (str) Application versioning (method 2)
 # version.regex = __version__ = ['"](.*)['"]

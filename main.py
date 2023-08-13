@@ -76,6 +76,7 @@ class AskPassword(FloatLayout):
 
 class AskName(FloatLayout):
     submit = ObjectProperty(None)
+    text_input = ObjectProperty(None)
     path = StringProperty()
     filename = StringProperty()
 
@@ -366,6 +367,10 @@ class PMScreen(Screen):
         self.file_manager.show(Upath) # Le répertoire racine
    
     def askPasswordDbc(self,path):
+        try:
+            self.dismiss_popup()
+        except:
+            pass
         content = AskPassword(submit=self.save,path=path)
         self._popup = Popup(title="Password", content=content,
                             size_hint=(0.6, 0.33),pos_hint={'top':0.8})
@@ -385,6 +390,7 @@ class PMScreen(Screen):
         except:
             pass
         key = hashPassword(password)
+        password = 0
         crypt = cryptDatabase(key=key,pathdbc=path,namedb=filename,mode=self.mode,types='db')
         #print("1",key,path,filename,self.mode)
         if (crypt == 1):
@@ -444,27 +450,43 @@ class PMScreen(Screen):
 
     mode = ''
     def changePasswordMain(self):
+
         if (self.ids.openTreeviewBtn.text == 'Open'):
-            self.errorFilePopup(["Database", "need to browse \n and unlock manager"])
+            toast("need to browse and unlock manager")
             return
         self.mode = 'resetP'
-        self.askPasswordDbc(self.data[0],self.data[1])
+        print("\n \n \n \n \n",self.data)
+        self.askPasswordDbc(self.data[0])
+
 
     def askNameDbc(self,path,filename):
-        self.dismiss_popup()
-        if (filename == '' or filename == ' '):
-            return
-        content = AskName(submit=self.save,path=path,filename=filename)
-        self._popup = Popup(title="Name", content=content,
-                            size_hint=(0.6, 0.25),pos_hint={'top':0.8})
-        self._popup.open()
+            #toast(f"{filename}")
+            try:
+                self.dismiss_popup()
+            except:
+                pass
+            if (filename == '' or filename == ' '):
+                return
+
+            content = AskName(submit=self.save,path=path,filename=filename)
+
+            try:
+                self._popup = Popup(title="Name", content=content,
+                                        size_hint=(0.6, 0.25),pos_hint={'top':0.8})
+                self._popup.open()
+            except:
+                toast("popup")
+                pass
+
 
     def changeNameDbc(self):
         if (self.ids.openTreeviewBtn.text == 'Open'):
-            self.errorFilePopup(["Database", "need to browse \n and unlock manager"])
+            toast("need to browse and unlock manager")
             return
         self.mode = 'resetN'
         self.askNameDbc(self.data[0],self.ids.mainPassword.text)
+    
+
 
 # Tables et database
     # Tables
@@ -582,27 +604,30 @@ class PMScreen(Screen):
                 conn.close()
 
     def removeRecordSelected(self):
-        listId = []
-        for rows in self.listRow:
-            listId.append(rows[3])
         try:
-            conn = sqlite3.connect(tempDB)
+            listId = []
+            for rows in self.listRow:
+                listId.append(rows[3])
+            try:
+                conn = sqlite3.connect(tempDB)
+            except:
+                return
+            else: 
+                c = conn.cursor()
+
+                c.executemany("DELETE FROM customers WHERE id = ?", [(a,) for a in listId])
+
+                #Delete From Database
+                c.execute("")
+
+                conn.commit()
+                conn.close()
+
+                self.clearBoxes()
+                self.querryDataBase()
+                Clipboard.copy('')
         except:
-            return
-        else: 
-            c = conn.cursor()
-
-            c.executemany("DELETE FROM customers WHERE id = ?", [(a,) for a in listId])
-
-            #Delete From Database
-            c.execute("")
-
-            conn.commit()
-            conn.close()
-
-            self.clearBoxes()
-            self.querryDataBase()
-            Clipboard.copy('')
+            pass
 
     def updateRecordSelected(self):
             if len(self.listRow) == 1:
@@ -648,16 +673,25 @@ class PMScreen(Screen):
                     self.querryDataBase()
                     
     def searchRecords(self):
-        lookupRecord = self.ids.name_field.text
-        lookupRecord+= '%'
-        self.remove_widget(self.table)
-        conn = sqlite3.connect(tempDB)
-        curs = conn.cursor()
-        curs.execute("SELECT rowid,* FROM customers WHERE siteOrApp like ?", (lookupRecord,))
-        records = curs.fetchall()
-        self.tables(records)
-        conn.commit()
-        conn.close()
+        try:
+            lookupRecord = self.ids.name_field.text
+            lookupRecord+= '%'
+        except:
+            pass
+        else:
+            try:
+                conn = sqlite3.connect(tempDB)
+                curs = conn.cursor()
+                curs.execute("SELECT rowid,* FROM customers WHERE siteOrApp like ?", (lookupRecord,))
+                records = curs.fetchall()
+            except:
+                pass
+            else:
+                self.remove_widget(self.table)
+                self.tables(records)
+                conn.commit()
+                conn.close()
+
 
 
     def genPassword(self,lent):
@@ -871,6 +905,11 @@ class SeedScreen(Screen):
         self.ids.passwordgen.text = ''
         self.ids.passwordgen.text = password
 
+    def putRngPswd(self):
+        pswd = random_password(range(14,22),alphabet_plusMoinSpace)
+        self.ids.textfielPswd = pswd
+
+
     def openSeedPhrase(self):
         try:
             if (self.ids.openSeedInBtn.text != 'Open'):
@@ -912,6 +951,36 @@ class SeedScreen(Screen):
             file.write(all)
             file.write(b',')
         file.close()
+
+    def changePasswordMainS(self):
+        try:
+            if (self.ids.openSeedInBtn.text == 'Open'):
+                toast("need to browse and unlock seed")
+                return
+            self.mode = 'resetP'
+            self.askPasswordDbc(self.data[0],self.data[1])
+        except:
+            pass
+
+    def askNameDbc(self,path,filename):
+        try:
+            self.dismiss_popup()
+            if (filename == '' or filename == ' '):
+                return
+            content = AskName(submit=self.save,path=path,filename=filename)
+            self._popup = Popup(title="Name", content=content,
+                                size_hint=(0.6, 0.25),pos_hint={'top':0.8})
+            self._popup.open()
+        except:
+            pass
+
+    def changeNameSeed(self):
+        if (self.ids.openSeedInBtn.text == 'Open'):
+            toast("need to browse and unlock seed")
+            return
+        self.mode = 'resetN'
+        self.askNameDbc(self.data[0],self.ids.mainPassword.text)
+
 
     def clearAllInputs(self):
             self.ids.text_field1.text = ""
@@ -1025,6 +1094,7 @@ class SeedScreen(Screen):
         self.ids.text_field22.text = liste[21]
         self.ids.text_field23.text = liste[22]
         self.ids.text_field24.text = liste[23]
+        
 
     def dismiss_popup(self):
         self._popup.dismiss()
@@ -1042,6 +1112,21 @@ class SeedScreen(Screen):
             os.remove(tempDB)
         if (os.path.exists(tempFile)):
             os.remove(tempFile)
+
+    def PassworGenPopup(self):
+        content = GenPassword(submit=self.genPassword, cancel=self.dismiss_popup)
+        popup = Popup(title=f'Password Generator', content=content,
+              auto_dismiss=True, size_hint=(0.7, 0.3),pos_hint={'top':0.7})
+        popup.open()
+    
+    def genPassword(self,lent):
+        lent = int(lent)
+        if (lent < 14):
+            return
+        password = random_password(lent,alphabet_plus )
+        self.ids.passwordgen.text = ''
+        self.ids.passwordgen.text = password
+
 
 
 class SettsScreen(Screen):
