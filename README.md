@@ -1,5 +1,5 @@
 # GsecuroB-Mobile en
-## APK V1
+## APK V1 (not actually updated)
 ### APK : https://drive.google.com/file/d/1Y98nH8HdhqKcE_ytM2Wx5BuC8B_1y8g7/view
 
 Try this application on your Android devices but, please, make a copy of your .dbc in case there is a bug. We cannot trust this application 100%.
@@ -11,7 +11,7 @@ Give a feedback if possible, Thank you
 
 
 # GsecuroB-Mobile fr
-## APK V1
+## APK V1 (pas encore mis a jours)
 ### APK : https://drive.google.com/file/d/1Y98nH8HdhqKcE_ytM2Wx5BuC8B_1y8g7/view
 
 Essayez cette application sur vos appareils Android mais, s'il vous plaît, faites une copie de votre .dbc au cas où il y aurait un bug. ont peu pas faire confiance à cette application à 100%.
